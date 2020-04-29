@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require_relative "../lib/swarm_cluster_cli_ope"
+
+SwarmClusterCliOpe::Cli.start

@@ -1,4 +1,6 @@
-require "swarm_cluster_cli_ope/version"
+require "zeitwerk"
+loader = Zeitwerk::Loader.for_gem
+loader.setup # ready!
 
 module SwarmClusterCliOpe
   class Error < StandardError; end
