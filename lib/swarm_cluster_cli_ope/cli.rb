@@ -19,12 +19,14 @@ module SwarmClusterCliOpe
         #se non presente allora chiediamo le varie configurazioni
         lista = []
         loop do
-          lista << Manager.new(ask("Aggiungi un server alla lista dei server Manager:"))
+          connection_name = ask("Aggiungi un server alla lista dei server Manager:")
+          result = Node.info(connection_name)
+          lista << Node.new(name:result.Name, connection_uri: connection_name)
           break if no? "Vuoi inserire al server?[n,no]"
         end
         #scriviamo le varie configurazioni
         cfg = Configuration.instance
-        cfg.managers = lista
+        cfg.nodes = lista
         cfg.save_base_cfgs
       end
 

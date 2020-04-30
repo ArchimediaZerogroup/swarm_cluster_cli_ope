@@ -3,6 +3,8 @@ module SwarmClusterCliOpe
     class Base
       include LoggerConcern
 
+      #@return [String] Identifivo per potersi collegare
+      attr_accessor :docker_host
       ##
       # Configurazioni standard
       # @return [SwarmClusterCliOpe::Configuration]
@@ -10,6 +12,12 @@ module SwarmClusterCliOpe
         Configuration.instance
       end
 
+      def docker_host
+        return @docker_host unless @docker_host.nil?
+        @docker_host = if Configuration.exist_base?
+                         "DOCKER_HOST=ssh://#{cfgs.managers.first.connection_uri}"
+                       end
+      end
 
       ##
       # Aggiunge al blocco passato di comandi, i comandi standard iniziali
@@ -42,7 +50,7 @@ module SwarmClusterCliOpe
         if cfgs.development_mode?
           ["docker"]
         else
-          ["DOCKER_HOST=ssh://#{cfgs.managers.first.name}", "docker"]
+          [docker_host, "docker"]
         end
       end
 

@@ -29,7 +29,7 @@ module SwarmClusterCliOpe
     # Risultato, essendo sempre composto da una lista di righe in formato json, ritorniamo un array di json
     # @param [Object] object_class
     # @return [Array<object_class>]
-    def result(object_class: Hash)
+    def result(object_class: OpenStruct)
       raw_result[:stdout].split("\n").collect { |s| object_class.new(JSON.parse(s)) }
     end
 

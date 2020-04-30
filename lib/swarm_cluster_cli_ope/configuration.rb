@@ -18,47 +18,48 @@ module SwarmClusterCliOpe
     # @return [Array<SwarmClusterCliOpe::Manager>]
     def managers
       return @_managers if @_managers
-      @_managers = self.class.merged_configurations[:managers].collect { |m| Manager.new(m) }
+      @_managers = self.nodes.select { |n| read_managers_cache_list.include?(n.name) }.collect { |c| Manager.new(name: c.name.to_s, connection_uri: c.connection_uri) }
     end
 
     ##
-    # Lista di managers da assegnare alle configurazioni
-    #
-    # @param [Array<SwarmClusterCliOpe::Manager>] mngs
-    # @return [Configuration]
-    def managers=(mngs)
-      @_managers = mngs
-      self
+    # Esegue un refresh della lista dei manager, ciclando su tutti i nodi, e scrivendo in /tmp un file temporaneo con
+    # con la lista dei nomi dei managers
+    def refresh_managers_cache_list
+      list = self.nodes.select(&:manager?).collect { |c| Manager.new(name: c.name, connection_uri: c.connection_uri) }
+      File.open(swarm_manager_cache_path, "w") do |f|
+        list.collect(&:name).each do |name|
+          f.puts(name)
+        end
+      end
     end
 
-    ##
-    # Lista dei Worker
-    # @return [Array<Worker>]
-    def workers
-      @_workers ||= []
-    end
-
-
-    ##
-    # Lista di managers da assegnare alle configurazioni
-    #
-    # @param [Array<SwarmClusterCliOpe::Manager>] mngs
-    # @return [Configuration]
-    def workers=(objs)
-      @_workers = objs
-      self
+    def read_managers_cache_list
+      refresh_managers_cache_list unless File.exists?(swarm_manager_cache_path)
+      File.read(swarm_manager_cache_path).split("\n")
     end
 
     ##
     # Lista di tutti i nodi del cluster
     #
-    # @return [Array<SwarmClusterCliOpe::Worker,SwamClusterCliOpe::Manager>]
+    # @return [Array<SwarmClusterCliOpe::Node>]
     def nodes
-      workers + managers
+      return @_nodes if @_nodes
+      @_nodes = self.class.merged_configurations[:connections_maps].collect { |m, c| Node.new(name: m.to_s, connection_uri: c) }
+    end
+
+    ##
+    # Lista di nodi da assegnare alle configurazioni
+    #
+    # @param [Array<SwarmClusterCliOpe::Node>]
+    # @return [Configuration]
+    def nodes=(objs)
+      @_nodes = objs
+      self
     end
 
     # @return [String,NilClass] nome dello stack del progetto se configurato
     def stack_name
+      return nil unless self.class.exist_base?
       return self.class.merged_configurations[:stack_name] if self.class.merged_configurations.key?(:stack_name)
     end
 
@@ -69,7 +70,11 @@ module SwarmClusterCliOpe
       "3"
     end
 
+    ##
+    # Siamo in sviluppo?
+    # @return [TrueClass, FalseClass]
     def development_mode?
+      return false unless self.class.exist_base?
       self.class.merged_configurations.key?(:dev_mode)
     end
 
@@ -87,7 +92,7 @@ module SwarmClusterCliOpe
       File.open(self.class.base_cfg_path, "wb") do |f|
         f.write({
                   version: SwarmClusterCliOpe::VERSION,
-                  managers: managers.collect(&:name)
+                  connections_maps: nodes.collect { |k| [k.name, k.connection_uri] }.to_h
                 }.to_json)
       end
     end
@@ -98,6 +103,10 @@ module SwarmClusterCliOpe
     end
 
     private
+
+    def swarm_manager_cache_path
+      File.join("/tmp", ".swarm_cluster_cli_manager_cache")
+    end
 
     ##
     # Legge le configurazioni base

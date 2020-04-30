@@ -22,7 +22,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Una volta installato lanciare il comando 
+
+
+```swarm_cluster_cli_ope install``` che si occuperà di configurare le varie impostazioni dell'ambiente
+
+
+FILE di configurazione base:
+```json
+{"version":"0.1.0","managers":["swarm_node_1"],"dev_mode":1,"connections_maps":{"swm1": "swarm_node_1","swm2": "swarm_node_2","swm3": "swarm_node_3"}}
+```
+
 
 ## Development
 
