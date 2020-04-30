@@ -2,15 +2,21 @@ module SwarmClusterCliOpe
   module Commands
     class Base
       include LoggerConcern
+      include ConfigurationConcern
 
       #@return [String] Identifivo per potersi collegare
       attr_accessor :docker_host
-      ##
-      # Configurazioni standard
-      # @return [SwarmClusterCliOpe::Configuration]
-      def cfgs
-        Configuration.instance
+
+      #@return [Array<String>] elenco di comandi da aggiungere in coda al comando lanciato
+      attr_accessor :base_suffix_command
+
+      def initialize(connection_uri: nil, base_suffix_command: ["--format=\"{{json .}}\""])
+        if connection_uri
+          @docker_host = "DOCKER_HOST=ssh://#{connection_uri}"
+        end
+        @base_suffix_command = base_suffix_command
       end
+
 
       def docker_host
         return @docker_host unless @docker_host.nil?
@@ -54,9 +60,6 @@ module SwarmClusterCliOpe
         end
       end
 
-      def base_suffix_command
-        ["--format=\"{{json .}}\""]
-      end
 
     end
   end

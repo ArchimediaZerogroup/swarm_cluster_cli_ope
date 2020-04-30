@@ -102,6 +102,12 @@ module SwarmClusterCliOpe
       File.join(ENV['HOME'], '.swarm_cluster', 'config.json')
     end
 
+    # @return [SwarmClusterCliOpe::Node]
+    # @param [String] node nome del nodo
+    def get_node(node)
+      nodes.find { |c| c.name == node }
+    end
+
     private
 
     def swarm_manager_cache_path

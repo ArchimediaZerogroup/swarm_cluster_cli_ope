@@ -17,9 +17,11 @@ module SwarmClusterCliOpe
         Commands::Service.new.find(service_name, stack_name: stack_name).result(object_class: Service).first
       end
 
+      ##
+      # Containers del servizio
       # @return [Array<SwarmClusterCliOpe::Container>]
       def containers
-        Commands::Service.new.ps(name).result(object_class: Container)
+        Commands::Container.new.ps(service_name: name).result(object_class: Container)
       end
 
     end

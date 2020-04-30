@@ -3,6 +3,7 @@ module SwarmClusterCliOpe
   module Models
     class Base
       include LoggerConcern
+      include ConfigurationConcern
 
       def initialize(obj)
         logger.debug { obj.inspect }

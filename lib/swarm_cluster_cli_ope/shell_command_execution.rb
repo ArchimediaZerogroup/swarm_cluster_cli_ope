@@ -38,9 +38,8 @@ module SwarmClusterCliOpe
         pid: nil,
         status: nil
       }
-      cmd = @cmd.join(' ')
-      logger.debug { "SHELL: #{cmd}" }
-      result[:status] = Open4::popen4(cmd) do |pid, stdin, stdout, stderr|
+      logger.debug { "SHELL: #{string_command}" }
+      result[:status] = Open4::popen4(string_command) do |pid, stdin, stdout, stderr|
         stdin.close
 
         result[:stdout] = stdout.read.strip
@@ -55,6 +54,13 @@ module SwarmClusterCliOpe
       logger.debug { "SHELL_RESPONSE: #{JSON.pretty_generate(result)}" }
 
       ShellCommandResponse.new(result)
+    end
+
+    ##
+    # Stampa il comando
+    # @return [String]
+    def string_command
+      @cmd.join(' ')
     end
 
 

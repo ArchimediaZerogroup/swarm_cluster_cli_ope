@@ -45,6 +45,13 @@ module SwarmClusterCliOpe
     end
 
     ##
+    # Inverso di :failed?
+    # @return [TrueClass, FalseClass]
+    def success?
+      !failed?
+    end
+
+    ##
     # Ritorna l'errore della shell
     def stderr
       raw_result[:stderr]

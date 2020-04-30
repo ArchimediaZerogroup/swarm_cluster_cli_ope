@@ -3,6 +3,7 @@ module SwarmClusterCliOpe
 
   class Cli < Thor
     include LoggerConcern
+    include ConfigurationConcern
     include Thor::Actions
 
     def self.exit_on_failure?
@@ -21,11 +22,11 @@ module SwarmClusterCliOpe
         loop do
           connection_name = ask("Aggiungi un server alla lista dei server Manager:")
           result = Node.info(connection_name)
-          lista << Node.new(name:result.Name, connection_uri: connection_name)
+          lista << Node.new(name: result.Name, connection_uri: connection_name)
           break if no? "Vuoi inserire al server?[n,no]"
         end
         #scriviamo le varie configurazioni
-        cfg = Configuration.instance
+        cfg = cfgs
         cfg.nodes = lista
         cfg.save_base_cfgs
       end
@@ -42,7 +43,7 @@ module SwarmClusterCliOpe
     end
 
     desc "services", "lista dei servizi per uno stack"
-    option :stack_name, required: false, type: :string, default: Configuration.instance.stack_name
+    option :stack_name, required: false, type: :string, default: cfgs.stack_name
 
     def services
       Models::Service.all(stack_name: options[:stack_name]).each do |s|
@@ -50,6 +51,26 @@ module SwarmClusterCliOpe
       end
     end
 
+    desc "cp [SRC] [DEST]", "Copia la sorgente in destinazione"
+    option :stack_name, required: false, type: :string, default: cfgs.stack_name
+    long_desc <<-LONGDESC
+      SRC e DEST possono essere un servizio, solo uno di essi può essere un servizio (TODO)
+      Per identificare che sia un servizio controllo se nella stringa è presete il :
+      il quale mi identifica l'inizio della PATH assoluta all'interno del  primo container del servizio
+      dove copiare i files
+    LONGDESC
+
+    def cp(src, dest)
+      #identifico quale dei due è il servizio e quale la path
+      if src.match(/^(.*)\:/)
+        container = Models::Container.find_by_service_name(Regexp.last_match[1], stack_name: options[:stack_name])
+        ris = container.copy_out(src.match(/\:(.*)$/)[1], dest)
+      else
+        container = Models::Container.find_by_service_name(dest.match(/^(.*)\:/)[1], stack_name: options[:stack_name])
+        ris = container.copy_in(src, dest.match(/\:(.*)$/)[1])
+      end
+      puts "COMPLETATO" if ris
+    end
 
   end
 end
