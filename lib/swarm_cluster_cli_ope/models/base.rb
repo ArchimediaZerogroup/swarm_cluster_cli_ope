@@ -12,6 +12,15 @@ module SwarmClusterCliOpe
         end
       end
 
+      IDNotFoundOnObject = Class.new(Error)
+
+      ##
+      # Esegue un inspect del tipo di componente di docker
+      def docker_inspect
+        raise IDNotFoundOnObject if id.blank?
+        Commands.const_get(self.class.name.demodulize).new.docker_inspect(id).result
+      end
+
     end
   end
 end
