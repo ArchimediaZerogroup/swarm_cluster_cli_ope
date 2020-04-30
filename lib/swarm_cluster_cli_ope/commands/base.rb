@@ -20,6 +20,22 @@ module SwarmClusterCliOpe
         cmd.add(*base_suffix_command)
       end
 
+      ##Esegue l'inspect sul componente
+      # @param [String] id
+      # @return [SwarmClusterCliOpe::ShellCommandResponse]
+      def docker_inspect(id)
+        command do |cmd|
+          cmd.add(" #{self.class.object_identifier} inspect #{id}")
+        end.execute
+      end
+
+      ##
+      # Ritorna il nome identificativo dell'elemento all'interno di docker: container,service,stack ecc..
+      # @return [String]
+      def self.object_identifier
+        self.name.demodulize.downcase
+      end
+
       private
 
       def base_prefix_command

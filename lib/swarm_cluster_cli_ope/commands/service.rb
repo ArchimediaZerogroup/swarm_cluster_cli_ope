@@ -11,6 +11,17 @@ module SwarmClusterCliOpe
         end.execute
       end
 
+      ##
+      # Ricarca il servizio per nome, nel caso in cui abbiamo anche il nome dello stack, concateniamo il nome
+      # del servizio con lo stack (dato che è il sistema con cui è più semplice trovare un servizio di uno stack).
+      # sucessivamente troviamo tutti i containers legati a quel servizio ed estrapoliamo l'istanza del primo
+      # @param [String] service_name
+      # @param [String] stack_name
+      def find(service_name, stack_name: nil)
+        command do |cmd|
+          cmd.add("service ls --filter=\"name=#{  stack_name ? "#{stack_name}_" : "" }#{service_name}\"")
+        end.execute
+      end
 
     end
   end

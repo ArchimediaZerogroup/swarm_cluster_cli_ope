@@ -12,6 +12,8 @@ module SwarmClusterCliOpe
         Commands::Service.new.ls(stack_name: stack_name).result(object_class: Service)
       end
 
-    end
+      def self.find(service_name, stack_name: nil)
+        Commands::Service.new.find(service_name, stack_name: stack_name).result(object_class: Service).first
+      end
   end
 end
