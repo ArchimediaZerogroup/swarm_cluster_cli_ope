@@ -1,6 +1,6 @@
 module SwarmClusterCliOpe
   module Commands
-    class ServiceCommand < DockerCommand
+    class Service < Base
 
       # @return [SwarmClusterCliOpe::ShellCommandResponse]
       # @param [String] stack_name nome dello stack da filtrare

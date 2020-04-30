@@ -1,6 +1,6 @@
 module SwarmClusterCliOpe
   module Commands
-    class DockerCommand
+    class Base
       include LoggerConcern
 
       ##

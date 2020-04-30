@@ -1,6 +1,6 @@
 module SwarmClusterCliOpe
   module Commands
-    class SwarmCommand < DockerCommand
+    class Swarm < Base
 
       # @return [SwarmClusterCliOpe::ShellCommandResponse]
       def ls
