@@ -23,7 +23,11 @@ module SwarmClusterCliOpe
       private
 
       def base_prefix_command
-        ["DOCKER_HOST=ssh://#{cfgs.managers.first.name}", "docker"]
+        if cfgs.development_mode?
+          ["docker"]
+        else
+          ["DOCKER_HOST=ssh://#{cfgs.managers.first.name}", "docker"]
+        end
       end
 
       def base_suffix_command

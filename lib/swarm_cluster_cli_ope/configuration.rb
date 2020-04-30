@@ -1,6 +1,7 @@
 require "singleton"
 require "fileutils"
 require "json"
+require "active_support/core_ext/hash"
 module SwarmClusterCliOpe
   ##
   # Classe per la gestione delle configurazioni
@@ -15,7 +16,7 @@ module SwarmClusterCliOpe
     # @return [Array<SwarmClusterCliOpe::Manager>]
     def managers
       return @_managers if @_managers
-      @_managers = self.class.read_base['managers'].collect { |m| Manager.new(m) }
+      @_managers = self.class.read_base[:managers].collect { |m| Manager.new(m) }
     end
 
     ##
@@ -61,6 +62,10 @@ module SwarmClusterCliOpe
       "3"
     end
 
+    def development_mode?
+      self.class.read_base.key?(:dev_mode)
+    end
+
     ##
     # Controlla se esiste il file di configurazione base, nella home dell'utente
     def self.exist_base?
@@ -93,7 +98,7 @@ module SwarmClusterCliOpe
     # @return [Hash]
     def self.read_base
       raise NoBaseConfigurations unless exist_base?
-      JSON.parse(File.read(self.base_cfg_path))
+      JSON.parse(File.read(self.base_cfg_path)).deep_symbolize_keys
     end
 
   end
