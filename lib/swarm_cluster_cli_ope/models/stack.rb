@@ -11,7 +11,7 @@ module SwarmClusterCliOpe
 
       # @return [Array<Stack>]
       def self.all
-        SwarmCommand.new.ls.result(object_class: Stack)
+        Commands::SwarmCommand.new.ls.result(object_class: Stack)
       end
     end
   end
