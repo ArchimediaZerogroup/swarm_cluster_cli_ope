@@ -51,7 +51,7 @@ module SwarmClusterCliOpe
       end
     end
 
-    desc "cp [SRC] [DEST]", "Copia la sorgente in destinazione"
+    desc "cp SRC DEST", "Copia la sorgente in destinazione"
     option :stack_name, required: false, type: :string, default: cfgs.stack_name
     long_desc <<-LONGDESC
       SRC e DEST possono essere un servizio, solo uno di essi può essere un servizio (TODO)
@@ -70,6 +70,13 @@ module SwarmClusterCliOpe
         ris = container.copy_in(src, dest.match(/\:(.*)$/)[1])
       end
       puts "COMPLETATO" if ris
+    end
+
+
+    desc "configure_project STACK_NAME", "Genera il file di configurazione del progetto contenente il nome dello stack"
+    def configure_project(stack_name)
+      cfgs.stack_name=stack_name
+      cfgs.save_project_cfgs
     end
 
   end

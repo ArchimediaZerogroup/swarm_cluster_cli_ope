@@ -11,6 +11,9 @@ module SwarmClusterCliOpe
     include Singleton
     include LoggerConcern
 
+    #@return [String] nome dello stack con cui lavoriamo
+    attr_accessor :stack_name
+
     NoBaseConfigurations = Class.new(Error)
 
     ##
@@ -59,8 +62,9 @@ module SwarmClusterCliOpe
 
     # @return [String,NilClass] nome dello stack del progetto se configurato
     def stack_name
+      return @stack_name if @stack_name
       return nil unless self.class.exist_base?
-      return self.class.merged_configurations[:stack_name] if self.class.merged_configurations.key?(:stack_name)
+      @stack_name = self.class.merged_configurations[:stack_name] if self.class.merged_configurations.key?(:stack_name)
     end
 
     ##
@@ -97,6 +101,18 @@ module SwarmClusterCliOpe
       end
     end
 
+    ##
+    # Si occupa del salvataggio delle configurazioni di progetto, se abbiamo lo stack_name
+    def save_project_cfgs
+      if @stack_name
+        File.open(File.join(FileUtils.pwd, self.class.cfgs_project_file_name), "wb") do |f|
+          f.write({
+                    stack_name: stack_name
+                  }.to_json)
+        end
+      end
+    end
+
     # @return [String] path to base home configurations
     def self.base_cfg_path
       File.join(ENV['HOME'], '.swarm_cluster', 'config.json')
@@ -110,6 +126,16 @@ module SwarmClusterCliOpe
 
     private
 
+    ##
+    # nome del file in cui salvare le configurazioni di progetto
+    # @return [String]
+    def self.cfgs_project_file_name
+      '.swarm_cluster_project'
+    end
+
+    ##
+    # Path al file dove salviamo la cache dei managers
+    # @return [String]
     def swarm_manager_cache_path
       File.join("/tmp", ".swarm_cluster_cli_manager_cache")
     end
@@ -123,7 +149,6 @@ module SwarmClusterCliOpe
       JSON.parse(File.read(self.base_cfg_path)).deep_symbolize_keys
     end
 
-
     ## Cerca le configurazioni di progetto e le mergia se sono presenti
     # @return [Hash]
     def self.merged_configurations
@@ -132,8 +157,8 @@ module SwarmClusterCliOpe
       folder = FileUtils.pwd
       loop do
 
-        if File.exist?(File.join(folder, '.swarm_cluster_project'))
-          project_file = File.join(folder, '.swarm_cluster_project')
+        if File.exist?(File.join(folder, cfgs_project_file_name))
+          project_file = File.join(folder, cfgs_project_file_name)
         end
 
         break unless project_file.nil?
