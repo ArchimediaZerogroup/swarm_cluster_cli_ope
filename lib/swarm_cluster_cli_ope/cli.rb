@@ -40,7 +40,7 @@ module SwarmClusterCliOpe
     end
 
     desc "services", "lista dei servizi per uno stack"
-    option :stack_name, required: false, type: :string, default: nil
+    option :stack_name, required: false, type: :string, default: Configuration.instance.stack_name
 
     def services
       Models::Service.all(stack_name: options[:stack_name]).each do |s|
