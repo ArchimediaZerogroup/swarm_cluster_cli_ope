@@ -37,6 +37,7 @@ module SwarmClusterCliOpe
     end
 
     def read_managers_cache_list
+      # TODO sarebbe da aggiornare ogni tanto, metti che uno non spegne mai il pc
       refresh_managers_cache_list unless File.exists?(swarm_manager_cache_path)
       File.read(swarm_manager_cache_path).split("\n")
     end
@@ -122,6 +123,12 @@ module SwarmClusterCliOpe
     # @param [String] node nome del nodo
     def get_node(node)
       nodes.find { |c| c.name == node }
+    end
+
+    # @return [SwarmClusterCliOpe::Node]
+    # @param [String] node_id
+    def get_node_by_id(node_id)
+      nodes.find { |c| c.id == node_id }
     end
 
     private

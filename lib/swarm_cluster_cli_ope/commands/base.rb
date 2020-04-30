@@ -12,7 +12,11 @@ module SwarmClusterCliOpe
 
       def initialize(connection_uri: nil, base_suffix_command: ["--format=\"{{json .}}\""])
         if connection_uri
-          @docker_host = "DOCKER_HOST=ssh://#{connection_uri}"
+          if connection_uri.blank?
+            @docker_host = "DOCKER_HOST=" # casistica di sviluppo, in cui l'host viene mappato localmente
+          else
+            @docker_host = "DOCKER_HOST=ssh://#{connection_uri}"
+          end
         end
         @base_suffix_command = base_suffix_command
       end
