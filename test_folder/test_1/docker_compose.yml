@@ -16,3 +16,5 @@ services:
       WORDPRESS_DB_USER: exampleuser
       WORDPRESS_DB_PASSWORD: examplepass
       WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./cartella_bindata:/test_bind
