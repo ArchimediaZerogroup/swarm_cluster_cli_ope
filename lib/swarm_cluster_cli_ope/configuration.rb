@@ -58,7 +58,7 @@ module SwarmClusterCliOpe
     # Livello di logging
     # @return [Integer]
     def logger_level
-      3
+      "3"
     end
 
     ##

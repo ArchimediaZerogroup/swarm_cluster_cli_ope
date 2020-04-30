@@ -1,5 +1,5 @@
 module SwarmClusterCliOpe
-  class Stack
+  class Stack < BaseDockerModel
 
     #@return [:String]
     attr_accessor :name
@@ -7,10 +7,6 @@ module SwarmClusterCliOpe
     attr_accessor :namespace
     #@return [Integer]
     attr_accessor :services
-
-    def initialize(dati)
-      @name, @namespace, @services = dati["Name"], dati["Namespace"], dati["Services"]
-    end
 
     # @return [Array<Stack>]
     def self.all

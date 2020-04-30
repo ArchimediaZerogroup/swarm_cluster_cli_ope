@@ -24,7 +24,7 @@ module SwarmClusterCliOpe
         end
         #scriviamo le varie configurazioni
         cfg = Configuration.instance
-        cfg.managers=lista
+        cfg.managers = lista
         cfg.save_base_cfgs
       end
 
@@ -37,6 +37,12 @@ module SwarmClusterCliOpe
       Stack.all.each do |s|
         puts s.name
       end
+    end
+
+    desc "services", "lista dei servizi per uno stack"
+    option :stack_name, required: false, type: :string
+    def services
+      puts Service.all.inspect
     end
 
 
