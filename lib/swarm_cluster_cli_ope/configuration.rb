@@ -8,16 +8,14 @@ module SwarmClusterCliOpe
     include Singleton
     include LoggerConcern
 
+    NoBaseConfigurations = Class.new(Error)
+
     ##
     # Lista di nodi su cui lavorare
     # @return [Array<SwarmClusterCliOpe::Manager>]
     def managers
-      #FIXME con configurazioni lette dalla home
-      @_managers ||= [
-        Manager.new("swarm_node_1"),
-        Manager.new("swarm_node_2"),
-        Manager.new("swarm_node_3")
-      ]
+      return @_managers if @_managers
+      @_managers = self.class.read_base['managers'].collect { |m| Manager.new(m) }
     end
 
     ##
@@ -74,7 +72,7 @@ module SwarmClusterCliOpe
     # Salva le configurazioni base in HOME
     def save_base_cfgs
       FileUtils.mkdir_p(File.dirname(self.class.base_cfg_path))
-      File.open(self.class.base_cfg_path,"wb") do |f|
+      File.open(self.class.base_cfg_path, "wb") do |f|
         f.write({
                   version: SwarmClusterCliOpe::VERSION,
                   managers: managers.collect(&:name)
@@ -85,6 +83,17 @@ module SwarmClusterCliOpe
     # @return [String] path to base home configurations
     def self.base_cfg_path
       File.join(ENV['HOME'], '.swarm_cluster', 'config.json')
+    end
+
+    private
+
+    ##
+    # Legge le configurazioni base
+    #
+    # @return [Hash]
+    def self.read_base
+      raise NoBaseConfigurations unless exist_base?
+      JSON.parse(File.read(self.base_cfg_path))
     end
 
   end
