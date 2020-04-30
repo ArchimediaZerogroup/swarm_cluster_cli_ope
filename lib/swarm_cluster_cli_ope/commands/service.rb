@@ -16,10 +16,22 @@ module SwarmClusterCliOpe
       # del servizio con lo stack (dato che è il sistema con cui è più semplice trovare un servizio di uno stack).
       # sucessivamente troviamo tutti i containers legati a quel servizio ed estrapoliamo l'istanza del primo
       # @param [String] service_name
-      # @param [String] stack_name
+      # @param [String] stack_name optional
+      # @return [SwarmClusterCliOpe::ShellCommandResponse]
       def find(service_name, stack_name: nil)
         command do |cmd|
           cmd.add("service ls --filter=\"name=#{  stack_name ? "#{stack_name}_" : "" }#{service_name}\"")
+        end.execute
+      end
+
+      ##
+      # Esegue il ps per un determinato servizio
+      # @param [String] service_name
+      # @param [String] stack_name optional
+      # @return [SwarmClusterCliOpe::ShellCommandResponse]
+      def ps(service_name, stack_name: nil)
+        command do |cmd|
+          cmd.add("service ps  #{stack_name ? "#{stack_name}_" : "" }#{service_name}")
         end.execute
       end
 

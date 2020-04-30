@@ -7,13 +7,21 @@ module SwarmClusterCliOpe
       #@return [String]
       attr_accessor :id
 
-
+      # @return [Array<SwarmClusterCliOpe::Service>]
       def self.all(stack_name: nil)
         Commands::Service.new.ls(stack_name: stack_name).result(object_class: Service)
       end
 
+      # @return [SwarmClusterCliOpe::Service]
       def self.find(service_name, stack_name: nil)
         Commands::Service.new.find(service_name, stack_name: stack_name).result(object_class: Service).first
       end
+
+      # @return [Array<SwarmClusterCliOpe::Container>]
+      def containers
+        Commands::Service.new.ps(name).result(object_class: Container)
+      end
+
+    end
   end
 end
