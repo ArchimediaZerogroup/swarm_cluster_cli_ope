@@ -34,7 +34,7 @@ module SwarmClusterCliOpe
     desc "stacks", "Lista degli stacks nel cluster"
 
     def stacks
-      Stack.all.each do |s|
+      Models::Stack.all.each do |s|
         puts s.name
       end
     end
@@ -42,7 +42,7 @@ module SwarmClusterCliOpe
     desc "services", "lista dei servizi per uno stack"
     option :stack_name, required: false, type: :string
     def services
-      puts Service.all.inspect
+      puts Models::Service.all.inspect
     end
 
 
