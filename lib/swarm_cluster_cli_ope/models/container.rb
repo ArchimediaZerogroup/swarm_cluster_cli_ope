@@ -50,7 +50,21 @@ module SwarmClusterCliOpe
       # Ritorna il connection_uri del nodo che ospita il container
       # @return [String]
       def mapped_uri_connection
-        cfgs.get_node_by_id(node_id).connection_uri
+        node.connection_uri
+      end
+
+      ##
+      # Elenco dei volumi mappato
+      # @return [Array<MappedVolume>]
+      def mapped_volumes
+        docker_inspect.Mounts.collect { |v| MappedVolume.new(v, container: self) }
+      end
+
+      ##
+      # Ritorna il nodo dello swarm che contiene questo container
+      # @return [SwarmClusterCliOpe::Node]
+      def node
+        cfgs.get_node_by_id(node_id)
       end
 
 

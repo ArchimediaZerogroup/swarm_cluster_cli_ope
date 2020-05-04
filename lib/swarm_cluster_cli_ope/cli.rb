@@ -76,10 +76,51 @@ module SwarmClusterCliOpe
 
 
     desc "configure_project STACK_NAME", "Genera il file di configurazione del progetto contenente il nome dello stack"
+
     def configure_project(stack_name)
-      cfgs.stack_name=stack_name
+      cfgs.stack_name = stack_name
       cfgs.save_project_cfgs
     end
+
+    desc "rsync_binded_from", "esegue un rsync dalla cartella bindata (viene sincronizzato il contenuto)"
+    option :stack_name, required: false, type: :string, default: cfgs.stack_name
+    option :service_name, required: true, type: :string
+    option :binded_container_folders, required: true, type: :string, desc: "path della cartella bindata all'interno del container da sincronizzare"
+    option :destination, required: false, type: :string, desc: "path della cartella dove sincronizzare il comando"
+
+    def rsync_binded_from
+      puts options.inspect
+
+      if yes? "Attenzione, i dati locali verranno sovrascritti/cancellati?[y,yes]"
+
+        # trovo il container del servizio
+        container = Models::Container.find_by_service_name(options[:service_name], stack_name: options[:stack_name])
+
+        # creo la cartella in locale se non esiste
+        FileUtils.mkdir_p(options[:destination])
+
+        nodo = container.mapped_uri_connection
+
+        # trovo la cartella bindata e la relativa cartella sul nodo
+        volume = container.mapped_volumes.find { |v| v.destination == options[:binded_container_folders] and v.is_binded? }
+        if volume.nil?
+          say "Non ho trovato il volume bindato con questa destinazione all'interno del container #{options[:binded_container_folders]}"
+          exit 0
+        end
+
+        #costruisco il comando rsync fra cartella del nodo e cartella sul pc
+        cmd = ShellCommandExecution.new(["rsync", "-zar", "--delete", volume.ssh_connection_path, options[:destination]])
+
+        say "Comando da eseguire:"
+        say "  #{cmd.string_command}"
+        if yes?("Confermare il comando?[y,yes]")
+          cmd.execute
+        end
+
+      end
+    end
+
+    # desc "rsync_binded_to", "esegue un rsync verso la cartella bindata (viene sincronizzato il contenuto)"
 
   end
 end

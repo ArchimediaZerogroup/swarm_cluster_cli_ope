@@ -15,6 +15,12 @@ module SwarmClusterCliOpe
       @connection_uri = connection_uri || name
     end
 
+    ##
+    # Mi definisce se la connessione che stiamo facendo con questo nodo, la facciamo tramite SSH oppure è locale
+    def is_over_ssh_uri?
+      connection_uri.match?(/\Assh\:/)
+    end
+
 
     ##
     # Controlla se questo nodo è un manager
