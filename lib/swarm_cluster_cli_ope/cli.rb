@@ -35,6 +35,12 @@ module SwarmClusterCliOpe
 
     end
 
+    desc "config", "Visualizza le configurazioni mergiate (HOME + Project)"
+    def config
+      puts JSON.pretty_generate(cfgs.class.merged_configurations)
+    end
+
+
     # DOCKER_HOST=ssh://swarm_node_1 docker stack ls --format="{{json .}}"
     desc "stacks", "Lista degli stacks nel cluster"
 
