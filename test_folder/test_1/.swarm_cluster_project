@@ -2,5 +2,6 @@
   "stack_name": "test_1",
   "connections_maps": {
     "marino-ubuntu": "unix:///var/run/docker.sock"
-  }
+  },
+  "log_level": "3"
 }
