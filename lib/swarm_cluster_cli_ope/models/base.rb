@@ -9,7 +9,7 @@ module SwarmClusterCliOpe
         logger.debug { obj.inspect }
         obj.each do |k, v|
           name = k.underscore
-          self.send("#{name}=", v) if respond_to?(name.to_sym)
+          self.send("#{name}=", v) if respond_to?("#{name}=".to_sym)
         end
       end
 
@@ -19,7 +19,14 @@ module SwarmClusterCliOpe
       # Esegue un inspect del tipo di componente di docker
       def docker_inspect
         raise IDNotFoundOnObject if id.blank?
-        Commands.const_get(self.class.name.demodulize).new.docker_inspect(id).result.first
+        Commands.const_get(self.class.name.demodulize).new(connection_uri: mapped_uri_connection).docker_inspect(id).result.first
+      end
+
+      ##
+      # Override della connessione al nodo corretto, i container sono legati allo swarm, conseguentemente dobbiamo
+      # collegarci al nodo giusto, di default lasiamo nil, così che prende le cfgs di default
+      def mapped_uri_connection
+        nil
       end
 
     end

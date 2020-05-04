@@ -15,6 +15,11 @@ module SwarmClusterCliOpe
       def labels=(labels)
         @labels = labels.split(",").collect { |a| a.split("=") }.collect { |a, b| [a, b] }.to_h
       end
+      ##
+      # Può essere che riceva dei valori dal config, tipo quando facciamo inspect
+      def config=(config)
+        @labels = config["Labels"]
+      end
 
       # @return [String] id del nodo di appartenenza
       def node_id
@@ -23,7 +28,7 @@ module SwarmClusterCliOpe
 
       # @return [SwarmClusterCliOpe::Models::Container]
       def self.find_by_service_name(service_name, stack_name: nil)
-        all(service_name: "#{stack_name}_#{service_name}").first
+        Service.find(service_name,stack_name:stack_name).containers.first
       end
 
       def self.all(service_name: nil)

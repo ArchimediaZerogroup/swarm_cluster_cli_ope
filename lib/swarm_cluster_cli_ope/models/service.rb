@@ -19,9 +19,18 @@ module SwarmClusterCliOpe
 
       ##
       # Containers del servizio
+
       # @return [Array<SwarmClusterCliOpe::Container>]
       def containers
-        Commands::Container.new.ps(service_name: name).result(object_class: Container)
+        tasks.collect { |t| t.container }
+      end
+
+      ##
+      # Elenco dei task del servizio
+      # docker service ps SERVICE_NAME --format="{{json .}}" -f "desired-state=running"
+      # @return [Array<Task>]
+      def tasks
+        Commands::Service.new.ps(name).result(object_class: Task)
       end
 
     end

@@ -1,3 +1,5 @@
+require 'uri'
+
 module SwarmClusterCliOpe
   class Node
     include LoggerConcern
@@ -19,6 +21,13 @@ module SwarmClusterCliOpe
     # Mi definisce se la connessione che stiamo facendo con questo nodo, la facciamo tramite SSH oppure è locale
     def is_over_ssh_uri?
       connection_uri.match?(/\Assh\:/)
+    end
+
+    ##
+    # connection_uri senza la parte del protocollo
+    # @return [String]
+    def hostname
+      URI(connection_uri).host
     end
 
 

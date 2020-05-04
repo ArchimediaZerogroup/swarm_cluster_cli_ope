@@ -32,7 +32,7 @@ module SwarmClusterCliOpe
         #costruisco la stringa per la parte di connetività del container
         out = "#{source}/."
         if container.node.is_over_ssh_uri?
-          out = "#{container.mapped_uri_connection}:#{out}"
+          out = "#{container.node.hostname}:#{out}"
         end
         out
 
