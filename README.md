@@ -24,7 +24,6 @@ Or install it yourself as:
 
 Una volta installato lanciare il comando 
 
-
 ```swarm_cluster_cli_ope install``` che si occuperà di configurare le varie impostazioni dell'ambiente
 
 
@@ -37,6 +36,12 @@ FILE di configurazione base:
 ## Development
 
 nel file di configurazione creato nella home aggiungere la chiave "dev_mode":1 per collegarsi localmente
+
+### Abbiamo due tasks swarm di simulazione
+```shell script
+docker stack deploy -c test_folder/test_1/docker_compose.yml test1
+docker stack deploy -c test_folder/test_2/docker_compose.yml test2
+```
 
 TODO: completare correttamente
 
