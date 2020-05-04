@@ -102,6 +102,11 @@ module SwarmClusterCliOpe
         # trovo il container del servizio
         container = Models::Container.find_by_service_name(options[:service_name], stack_name: options[:stack_name])
 
+        if container.nil?
+          say "Container non trovato con #{options[:stack_name]}@##{options[:service_name]}"
+          exit 0
+        end
+
         # creo la cartella in locale se non esiste
         FileUtils.mkdir_p(options[:destination])
 
