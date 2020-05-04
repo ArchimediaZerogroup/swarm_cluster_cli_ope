@@ -4,7 +4,7 @@ module SwarmClusterCliOpe
 
     #@return [String] nome del nodo
     attr_accessor :name
-    #@return [String] nome da utilizzare nella parte DOCKER_HOST=ssh://NOME_QUA
+    #@return [String] nome da utilizzare nella parte DOCKER_HOST=CONNECTION_URI
     attr_accessor :connection_uri
 
 
@@ -20,7 +20,7 @@ module SwarmClusterCliOpe
     # Controlla se questo nodo è un manager
     # @return [TrueClass,FalseClass]
     def manager?
-      info.Swarm["RemoteManagers"].collect { |n| n["NodeID"] }.include?(infos.Swarm["NodeID"])
+      info.Swarm["RemoteManagers"].collect { |n| n["NodeID"] }.include?(info.Swarm["NodeID"])
     end
 
     ##
@@ -54,7 +54,7 @@ module SwarmClusterCliOpe
     # Ritorna le info base di un nodo
     def self.info(connection_uri)
       command = Commands::Base.new
-      command.docker_host = "DOCKER_HOST=ssh://#{connection_uri}"
+      command.docker_host = "DOCKER_HOST=#{connection_uri}"
       result = command.command do |cmd|
         cmd.add("info")
       end.execute.result.first

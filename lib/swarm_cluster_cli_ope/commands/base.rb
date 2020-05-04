@@ -15,7 +15,7 @@ module SwarmClusterCliOpe
           if connection_uri.blank?
             @docker_host = "DOCKER_HOST=" # casistica di sviluppo, in cui l'host viene mappato localmente
           else
-            @docker_host = "DOCKER_HOST=ssh://#{connection_uri}"
+            @docker_host = "DOCKER_HOST=#{connection_uri}"
           end
         end
         @base_suffix_command = base_suffix_command
@@ -25,7 +25,7 @@ module SwarmClusterCliOpe
       def docker_host
         return @docker_host unless @docker_host.nil?
         @docker_host = if Configuration.exist_base?
-                         "DOCKER_HOST=ssh://#{cfgs.managers.first.connection_uri}"
+                         "DOCKER_HOST=#{cfgs.managers.first.connection_uri}"
                        end
       end
 
