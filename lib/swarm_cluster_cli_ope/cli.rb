@@ -99,8 +99,6 @@ module SwarmClusterCliOpe
         # creo la cartella in locale se non esiste
         FileUtils.mkdir_p(options[:destination])
 
-        nodo = container.mapped_uri_connection
-
         # trovo la cartella bindata e la relativa cartella sul nodo
         volume = container.mapped_volumes.find { |v| v.destination == options[:binded_container_folders] and v.is_binded? }
         if volume.nil?
