@@ -1,6 +1,7 @@
 require "singleton"
 require "fileutils"
 require "json"
+require 'digest'
 require "active_support/core_ext/hash"
 module SwarmClusterCliOpe
   ##
@@ -72,7 +73,7 @@ module SwarmClusterCliOpe
     # Livello di logging
     # @return [Integer]
     def logger_level
-      "3"
+      self.class.merged_configurations[:log_level].to_s || "0"
     end
 
     ##
@@ -141,10 +142,13 @@ module SwarmClusterCliOpe
     end
 
     ##
-    # Path al file dove salviamo la cache dei managers
+    # Path al file dove salviamo la cache dei managers, ha un TTL legato all'orario (anno-mese-giorno-ora)
+    # quindi ogni ora si autoripulisce e con un md5 delle configurazioni di base
     # @return [String]
     def swarm_manager_cache_path
-      File.join("/tmp", ".swarm_cluster_cli_manager_cache")
+      md5 = Digest::MD5.hexdigest(self.class.merged_configurations.to_json)
+      file_name = Time.now.strftime(".swarm_cluster_cli_manager_cache-%Y%m%d%H-#{md5}")
+      File.join("/tmp", file_name)
     end
 
     ##
