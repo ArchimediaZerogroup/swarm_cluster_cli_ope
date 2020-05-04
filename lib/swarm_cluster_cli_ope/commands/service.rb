@@ -29,9 +29,11 @@ module SwarmClusterCliOpe
       # @param [String] service_name
       # @param [String] stack_name optional
       # @return [SwarmClusterCliOpe::ShellCommandResponse]
-      def ps(service_name, stack_name: nil)
+      # @param [TrueClass] only_active se si vuole avere solo quelli attivi
+      def ps(service_name, stack_name: nil, only_active: true)
         command do |cmd|
           cmd.add("service ps  #{stack_name ? "#{stack_name}_" : "" }#{service_name}")
+          cmd.add('-f "desired-state=running"') if only_active
         end.execute
       end
 
