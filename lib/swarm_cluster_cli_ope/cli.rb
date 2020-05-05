@@ -136,7 +136,7 @@ module SwarmClusterCliOpe
       end
 
       #costruisco il comando rsync fra cartella del nodo e cartella sul pc
-      cmd = ["rsync", "-zar", "--delete"]
+      cmd = ["rsync", "-zr", "--delete"]
       if direction == :down
         cmd << "#{volume.ssh_connection_path}/."
         # creo la cartella in locale se non esiste
