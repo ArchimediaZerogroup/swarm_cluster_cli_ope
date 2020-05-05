@@ -76,10 +76,13 @@ ES:
 swarm_cli_ope services --stack-name=webapps-examinerapp-staging ./test_folder/test_1/cartella_bindata/test jeapp:/tmp/.
 ```
 
-### Rsync da container a locale
+### Rsync da/a container a/da locale
+
+Utilizzare `rsync_binded_from` per scaricare e `rsync_binded_to` per caricare
+
 
 ```shell script
-swarm_cli_ope rsync_binded_from --stack-name=STACK_NAME --service_name NOME_SERVIZIO_SENZA_STACK --binded-container-folders CARTELLA_CONTAINER --destination CARTELLA_DESTINAZIONE
+swarm_cli_ope rsync_binded_from --stack-name=STACK_NAME --service_name NOME_SERVIZIO_SENZA_STACK --binded-container-folders CARTELLA_CONTAINER --local-folder CARTELLA_DESTINAZIONE
 ```
 
 ES:
