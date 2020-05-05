@@ -82,10 +82,6 @@ swarm_cli_ope services --stack-name=NOME_STACK
 ```shell script
 swarm_cli_ope cp --stack-name=NOME_STACK PATH_FILE_LOCALE NOME_SERVIZIO:DESTINAZIONE_NEL_CONTAINER
 ```
-ES:
-```shell script
-swarm_cli_ope cp --stack-name=webapps-examinerapp-staging ./test_folder/test_1/cartella_bindata/test jeapp:/tmp/.
-```
 
 ### Rsync da/a container a/da locale
 
@@ -95,12 +91,6 @@ Utilizzare `rsync_binded_from` per scaricare e `rsync_binded_to` per caricare
 ```shell script
 swarm_cli_ope rsync_binded_from --stack-name=STACK_NAME --service_name NOME_SERVIZIO_SENZA_STACK --binded-container-folders CARTELLA_CONTAINER --local-folder CARTELLA_DESTINAZIONE
 ```
-
-ES:
-```shell script
-swarm_cli_ope rsync_binded_from --stack-name=web-site-ranchilbosco-production --service_name wordpress --binded-container-folders /var/www/html/wp-content/uploads --destination ./uploads
-```
-
 
 ## Development
 
