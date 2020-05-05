@@ -1,8 +1,6 @@
 # SwarmClusterCliOpe
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/swarm_cluster_cli_ope`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Gemma per la gestione semplificata degli operatori con un cluster swarm
 
 ## Installation
 
@@ -55,6 +53,19 @@ swarm_cli_ope config
 swarm_cli_ope stacks
 ```
 
+
+### MC:
+Apre MC collegato al container del servizio specificato
+```shell script
+swarm_cli_ope mc SERVICE_NAME --stack-name=NOME_STACK
+```
+
+### SHELL:
+Apre una shell (default bash) collegato al container del servizio specificato
+```shell script
+swarm_cli_ope shell SERVICE_NAME --stack-name=NOME_STACK
+```
+
 ### Elenco di tutti i servizi
 Se siamo nel progetto con il file di progetto vedremo comunque i servizi filtrati
 ```shell script
@@ -69,11 +80,11 @@ swarm_cli_ope services --stack-name=NOME_STACK
 
 ### Copia di files da/verso container attraverso il docker cp   
 ```shell script
-swarm_cli_ope services --stack-name=NOME_STACK PATH_FILE_LOCALE NOME_SERVIZIO:DESTINAZIONE_NEL_CONTAINER
+swarm_cli_ope cp --stack-name=NOME_STACK PATH_FILE_LOCALE NOME_SERVIZIO:DESTINAZIONE_NEL_CONTAINER
 ```
 ES:
 ```shell script
-swarm_cli_ope services --stack-name=webapps-examinerapp-staging ./test_folder/test_1/cartella_bindata/test jeapp:/tmp/.
+swarm_cli_ope cp --stack-name=webapps-examinerapp-staging ./test_folder/test_1/cartella_bindata/test jeapp:/tmp/.
 ```
 
 ### Rsync da/a container a/da locale
@@ -101,15 +112,7 @@ docker stack deploy -c test_folder/test_1/docker_compose.yml test1
 docker stack deploy -c test_folder/test_2/docker_compose.yml test2
 ```
 
-TODO: completare correttamente
-
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/swarm_cluster_cli_ope.
 
 
 ## License
