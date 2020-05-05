@@ -1,18 +1,52 @@
 version: '3.8'
-
+#PCN4V%e5%&star)8LR
 services:
   db:
-    image: mysql
+    image: mysql:5.7
     environment:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: exampleuser
       MYSQL_PASSWORD: examplepass
       MYSQL_ROOT_PASSWORD: root
+    networks:
+      - default
+    volumes:
+    - "database:/var/lib/mysql"
 
-  second:
+  wordpress:
     image: wordpress
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: exampleuser
       WORDPRESS_DB_PASSWORD: examplepass
       WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - "/mnt/docker_volumes/clients/archimedia/projects/sistemi-swarm-cluster-cli-ope/services/wordpress/volumes/www_html:/var/www/html"
+      - "/mnt/docker_volumes/clients/archimedia/projects/sistemi-swarm-cluster-cli-ope/services/wordpress/volumes/test_rsync:/test_rsync"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 160M
+      labels:
+        - "traefik.enable=true" #definisce che questo container deve essere pubblicato da traefik
+        - "traefik.http.routers.sistemi-swarm-cluster-cli-ope-test.entrypoints=web"
+        - "traefik.http.routers.sistemi-swarm-cluster-cli-ope-test.rule=Host(`testsyncswarm.swm.wtest.it`)"
+        - "traefik.http.services.sistemi-swarm-cluster-cli-ope-test.loadbalancer.server.port=80"
+    labels:
+      it.archimedia.backupper.enable: 'false'
+    networks:
+      - default
+      - public_ingress
+
+networks:
+  default:
+  public_ingress:
+    external: true
+
+volumes:
+  database:
+    driver: rbd
+    driver_opts:
+      size: 500
