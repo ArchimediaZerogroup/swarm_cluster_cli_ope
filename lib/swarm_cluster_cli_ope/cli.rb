@@ -89,6 +89,25 @@ module SwarmClusterCliOpe
       cfgs.save_project_cfgs
     end
 
+    desc "service_shell SERVICE_NAME", "apre una shell [default bash] dentro al container"
+    option :stack_name, required: false, type: :string, default: cfgs.stack_name
+    option :shell, required: false, type: :string, default: 'bash'
+    def service_shell(service_name)
+      container = Models::Container.find_by_service_name(service_name, stack_name: options[:stack_name])
+
+      cmd = container.docker_command
+      cmd.base_suffix_command=''
+      shell_operation = cmd.command do |c|
+        c.add("exec -it #{container.id} #{options[:shell]}")
+      end
+
+      say "Stai entrando della shell in #{options[:shell]} del container #{options[:stack_name]}->#{container.name}[#{container.id}]"
+      system(shell_operation.string_command)
+      say "Shell chiusa"
+    end
+
+
+
     desc "rsync_binded_from", "esegue un rsync dalla cartella bindata (viene sincronizzato il contenuto)"
     option :stack_name, required: false, type: :string, default: cfgs.stack_name
     option :service_name, required: true, type: :string
