@@ -1,4 +1,5 @@
 require 'thor'
+require 'mkmf'
 module SwarmClusterCliOpe
 
   class Cli < Thor
@@ -64,6 +65,14 @@ module SwarmClusterCliOpe
     option :stack_name, required: false, type: :string, default: cfgs.stack_name
 
     def mc(service_name)
+
+      # Disabilito output della libreria
+      MakeMakefile::Logging.instance_variable_set(:@logfile, File::NULL)
+      unless find_executable 'mc'
+        puts "Non hai installato MC"
+        exit 0
+      end
+
       begin
         container = Models::Container.find_by_service_name(service_name, stack_name: options[:stack_name])
 
@@ -80,30 +89,30 @@ module SwarmClusterCliOpe
           c.add("run --rm -d -p 42222:22 --volumes-from #{container.id} sickp/alpine-sshd:7.5")
         end
 
-        say "Creazione container #{shell_operation.string_command}"
+        puts "Creazione container #{shell_operation.string_command}"
         id_container = shell_operation.execute.raw_result[:stdout]
-        say "Container generato con id:#{id_container}"
+        puts "Container generato con id:#{id_container}"
 
         # eseguo tunnel verso nodo e container ssh
         socket_ssh_path = "/tmp/socket_ssh_#{id_container}"
         # ssh -f -N -T -M -S <path-to-socket> -L 13333:0.0.0.0:42222 <server>
         cmd_tunnel = ["ssh", "-f -N -T -M", "-S #{socket_ssh_path}", "-L 13333:0.0.0.0:42222", server].join(" ")
-        say "Apro tunnel"
-        say cmd_tunnel
+        puts "Apro tunnel"
+        puts cmd_tunnel
         system(cmd_tunnel)
 
         # apro MC
         #     mc . sftp://root:root@0.0.0.0:13333
         mc_cmd = "mc . sftp://root:root@0.0.0.0:13333"
-        say "Apro MC"
-        say mc_cmd
+        puts "Apro MC"
+        puts mc_cmd
         system(mc_cmd)
       ensure
         if socket_ssh_path
           # chiudo tunnel
           # ssh -S <path-to-socket> -O exit <server>
           close_tunnel_cmd = "ssh -S #{socket_ssh_path} -O exit #{server}"
-          say "Chiudo tunnel"
+          puts "Chiudo tunnel"
           # say close_tunnel_cmd
           ShellCommandExecution.new(close_tunnel_cmd).execute
         end
@@ -111,7 +120,7 @@ module SwarmClusterCliOpe
         if id_container
           # cancello container
           # docker stop  #{id_container}
-          say "Spengo container di appoggio"
+          puts "Spengo container di appoggio"
           puts "docker stop  #{id_container}"
           cmd = container.docker_command
           cmd.base_suffix_command = ''
@@ -122,8 +131,6 @@ module SwarmClusterCliOpe
         end
 
       end
-
-      say "Completato"
     end
 
     desc "cp SRC DEST", "Copia la sorgente in destinazione"
