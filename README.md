@@ -1,5 +1,5 @@
 # SwarmClusterCliOpe
-
+WIP to translate
 Gemma per la gestione semplificata degli operatori con un cluster swarm
 
 ## Installation

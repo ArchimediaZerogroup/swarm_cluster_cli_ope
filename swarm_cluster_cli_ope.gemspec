@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Marino Bonetti"]
   spec.email = ["marinobonetti@gmail.com"]
 
-  spec.summary = "Gemma per la gestione del cluster swarm"
+  spec.summary = "WIP Gemma per la gestione del cluster swarm"
   spec.description = "Gestione di varie operazioni come sincronia con le cartelle bindate dei container (rsync) up o
                         down e possibilità di scaricare/caricare i file direttamente all'interno del cluster, in
                         modo facilitato"
@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.license = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
-  spec.metadata["allowed_push_host"] = "gem.archimedianet.it"
+  spec.metadata["allowed_push_host"] = "rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
   # spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
