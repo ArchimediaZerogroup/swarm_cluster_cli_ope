@@ -30,7 +30,7 @@ module SwarmClusterCliOpe
       # se siamo in locale non sarà presente la parte di server e ":"
       def ssh_connection_path
         #costruisco la stringa per la parte di connetività del container
-        out = "#{source}/."
+        out = "#{source}"
         if container.node.is_over_ssh_uri?
           out = "#{container.node.hostname}:#{out}"
         end
