@@ -60,6 +60,72 @@ module SwarmClusterCliOpe
       end
     end
 
+    desc "mc SERVICE_NAME", "Apre MC tra la cartella attuale e il container (potrebbe dar luogo a degli errori, ma funziona)"
+    option :stack_name, required: false, type: :string, default: cfgs.stack_name
+
+    def mc(service_name)
+      begin
+        container = Models::Container.find_by_service_name(service_name, stack_name: options[:stack_name])
+
+        server = container.node.hostname
+
+        # Creo container ssh
+        #     DOCKER_HOST=ssh://swarm_node_1 docker run --rm -d -p 12222:22 \
+        # --volumes-from sistemi-test_swarm_cluster_cli_wordpress.1.zbbz1xxh4vzzccndvs973jnuc \
+        # sickp/alpine-sshd:7.5
+        #
+        cmd = container.docker_command
+        cmd.base_suffix_command = ''
+        shell_operation = cmd.command do |c|
+          c.add("run --rm -d -p 42222:22 --volumes-from #{container.id} sickp/alpine-sshd:7.5")
+        end
+
+        say "Creazione container #{shell_operation.string_command}"
+        id_container = shell_operation.execute.raw_result[:stdout]
+        say "Container generato con id:#{id_container}"
+
+        # eseguo tunnel verso nodo e container ssh
+        socket_ssh_path = "/tmp/socket_ssh_#{id_container}"
+        # ssh -f -N -T -M -S <path-to-socket> -L 13333:0.0.0.0:42222 <server>
+        cmd_tunnel = ["ssh", "-f -N -T -M", "-S #{socket_ssh_path}", "-L 13333:0.0.0.0:42222", server].join(" ")
+        say "Apro tunnel"
+        say cmd_tunnel
+        system(cmd_tunnel)
+
+        # apro MC
+        #     mc . sftp://root:root@0.0.0.0:13333
+        mc_cmd = "mc . sftp://root:root@0.0.0.0:13333"
+        say "Apro MC"
+        say mc_cmd
+        system(mc_cmd)
+      ensure
+        if socket_ssh_path
+          # chiudo tunnel
+          # ssh -S <path-to-socket> -O exit <server>
+          close_tunnel_cmd = "ssh -S #{socket_ssh_path} -O exit #{server}"
+          say "Chiudo tunnel"
+          # say close_tunnel_cmd
+          ShellCommandExecution.new(close_tunnel_cmd).execute
+        end
+
+        if id_container
+          # cancello container
+          # docker stop  #{id_container}
+          say "Spengo container di appoggio"
+          puts "docker stop  #{id_container}"
+          cmd = container.docker_command
+          cmd.base_suffix_command = ''
+          stop_ssh_container = cmd.command do |c|
+            c.add("stop #{id_container}")
+          end
+          stop_ssh_container.execute
+        end
+
+      end
+
+      say "Completato"
+    end
+
     desc "cp SRC DEST", "Copia la sorgente in destinazione"
     option :stack_name, required: false, type: :string, default: cfgs.stack_name
     long_desc <<-LONGDESC
@@ -92,11 +158,12 @@ module SwarmClusterCliOpe
     desc "service_shell SERVICE_NAME", "apre una shell [default bash] dentro al container"
     option :stack_name, required: false, type: :string, default: cfgs.stack_name
     option :shell, required: false, type: :string, default: 'bash'
+
     def service_shell(service_name)
       container = Models::Container.find_by_service_name(service_name, stack_name: options[:stack_name])
 
       cmd = container.docker_command
-      cmd.base_suffix_command=''
+      cmd.base_suffix_command = ''
       shell_operation = cmd.command do |c|
         c.add("exec -it #{container.id} #{options[:shell]}")
       end
@@ -105,7 +172,6 @@ module SwarmClusterCliOpe
       system(shell_operation.string_command)
       say "Shell chiusa"
     end
-
 
 
     desc "rsync_binded_from", "esegue un rsync dalla cartella bindata (viene sincronizzato il contenuto)"
@@ -144,7 +210,6 @@ module SwarmClusterCliOpe
         say "Container non trovato con #{options[:stack_name]}@##{options[:service_name]}"
         exit 0
       end
-
 
 
       # trovo la cartella bindata e la relativa cartella sul nodo
