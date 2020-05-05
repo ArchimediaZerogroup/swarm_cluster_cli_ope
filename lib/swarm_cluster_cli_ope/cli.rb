@@ -19,6 +19,7 @@ module SwarmClusterCliOpe
         say "Configurazione già presente"
       else
         #se non presente allora chiediamo le varie configurazioni
+        say "Ricordarsi di poter raggiungere i server che verranno inseriti"
         lista = []
         loop do
           connection_name = ask("Aggiungi un server alla lista dei server Manager(inserire uri: ssh://server | unix:///socket/path:")
@@ -26,7 +27,7 @@ module SwarmClusterCliOpe
           node = Node.new(name: result.Name, connection_uri: connection_name)
           say "Aggiungo #{node.name} che si connette con DOCKER_HOST=#{node.connection_uri}"
           lista << node
-          break if no? "Vuoi inserire al server?[n,no]"
+          break if no? "Vuoi inserire altri server?[n,no]"
         end
         #scriviamo le varie configurazioni
         cfg = cfgs

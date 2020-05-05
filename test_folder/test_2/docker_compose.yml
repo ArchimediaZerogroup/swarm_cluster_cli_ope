@@ -1,5 +1,5 @@
 version: '3.8'
-#PCN4V%e5%&star)8LR
+
 services:
   db:
     image: mysql:5.7

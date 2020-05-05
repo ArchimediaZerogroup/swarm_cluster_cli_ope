@@ -74,6 +74,10 @@ module SwarmClusterCliOpe
     # @return [Integer]
     def logger_level
       self.class.merged_configurations[:log_level].to_s || "0"
+    rescue SwarmClusterCliOpe::Configuration::NoBaseConfigurations
+      # quando andiamo in errore durante l'installazione per avere le informazioni per il logger.
+      # Usiamo lo standard
+      "0"
     end
 
     ##
