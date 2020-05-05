@@ -10,15 +10,15 @@ Gem::Specification.new do |spec|
   spec.description = "Gestione di varie operazioni come sincronia con le cartelle bindate dei container (rsync) up o
                         down e possibilità di scaricare/caricare i file direttamente all'interno del cluster, in
                         modo facilitato"
-  spec.homepage = "https://gitlab.archimedianet.it/sistemi/swarm_cluster_cli_ope"
+  spec.homepage = "https://github.com/ArchimediaZerogroup/swarm_cluster_cli_ope"
   spec.license = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
   spec.metadata["allowed_push_host"] = 'https://rubygems.org/'
 
   spec.metadata["homepage_uri"] = spec.homepage
-  # spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["source_code_uri"] = "https://github.com/ArchimediaZerogroup/swarm_cluster_cli_ope"
+  spec.metadata["changelog_uri"] = "https://github.com/ArchimediaZerogroup/swarm_cluster_cli_ope/blob/master/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
