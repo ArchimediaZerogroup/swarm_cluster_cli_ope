@@ -30,7 +30,7 @@ module SwarmClusterCliOpe
       # docker service ps SERVICE_NAME --format="{{json .}}" -f "desired-state=running"
       # @return [Array<Task>]
       def tasks
-        Commands::Service.new.ps(name).result(object_class: Task)
+        docker_command.ps(name).result(object_class: Task)
       end
 
     end

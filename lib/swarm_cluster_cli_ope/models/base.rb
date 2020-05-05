@@ -19,7 +19,15 @@ module SwarmClusterCliOpe
       # Esegue un inspect del tipo di componente di docker
       def docker_inspect
         raise IDNotFoundOnObject if id.blank?
-        Commands.const_get(self.class.name.demodulize).new(connection_uri: mapped_uri_connection).docker_inspect(id).result.first
+        docker_command.docker_inspect(id).result.first
+      end
+
+
+      ##
+      # Ritorna il comando corretto, inizializzato con la connecttion uri corretta
+      # @return [Commands::Base]
+      def docker_command
+        Commands.const_get(self.class.name.demodulize).new(connection_uri: mapped_uri_connection)
       end
 
       ##

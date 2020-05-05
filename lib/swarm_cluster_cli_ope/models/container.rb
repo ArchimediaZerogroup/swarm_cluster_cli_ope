@@ -40,7 +40,7 @@ module SwarmClusterCliOpe
       # @param [String] src sorgente da cui copiare
       # @param [String] dest destinazione a cui copiare
       def copy_in(src, dest)
-        Commands::Container.new(connection_uri: mapped_uri_connection).cp(src, "#{id}:#{dest}").success?
+        docker_command.cp(src, "#{id}:#{dest}").success?
       end
 
       ##
@@ -48,7 +48,7 @@ module SwarmClusterCliOpe
       # @param [String] src sorgente da cui copiare
       # @param [String] dest destinazione a cui copiare
       def copy_out(src, dest)
-        Commands::Container.new(connection_uri: mapped_uri_connection).cp("#{id}:#{src}", dest).success?
+        docker_command.cp("#{id}:#{src}", dest).success?
       end
 
       ##
