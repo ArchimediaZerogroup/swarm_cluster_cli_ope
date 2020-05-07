@@ -37,7 +37,7 @@ module SwarmClusterCliOpe
 
     end
 
-    desc "config", "Visualizza le configurazioni mergiate (HOME + Project)"
+    desc "config", "Visualizza le configurazioni mergiate (HOME + Project configuration[#{Configuration.cfgs_project_file_name}])"
 
     def config
       puts JSON.pretty_generate(cfgs.class.merged_configurations)

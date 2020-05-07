@@ -38,7 +38,7 @@ FILE di configurazione base:
 
 ### Configuratione di un progetto
 Si occupa di generare nel progetto il file di configurazione in cui impostare impostazioni specifiche di progetto
-quali stack_name
+quali stack_name (.swarm_cluster_project)
 ```shell script
 swarm_cli_ope configure_project STACK_NAME
 ```
