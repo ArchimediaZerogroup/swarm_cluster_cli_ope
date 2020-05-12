@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    swarm_cluster_cli_ope (0.1.5)
+    swarm_cluster_cli_ope (0.1.6)
       activesupport
       open4
       thor (~> 1.0)
