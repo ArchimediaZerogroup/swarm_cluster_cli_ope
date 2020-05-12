@@ -186,7 +186,7 @@ module SwarmClusterCliOpe
     option :stack_name, required: false, type: :string, default: cfgs.stack_name
     option :service_name, required: true, type: :string
     option :binded_container_folders, required: true, type: :string, desc: "path della cartella bindata all'interno del container da sincronizzare"
-    option :local_folder, required: false, type: :string, desc: "path della cartella dove sincronizzare il comando"
+    option :local_folder, required: true, type: :string, desc: "path della cartella dove sincronizzare il comando"
 
     def rsync_binded_from
       if yes? "Attenzione, i dati locali verranno sovrascritti/cancellati?[y,yes]"
@@ -198,7 +198,7 @@ module SwarmClusterCliOpe
     option :stack_name, required: false, type: :string, default: cfgs.stack_name
     option :service_name, required: true, type: :string
     option :binded_container_folders, required: true, type: :string, desc: "path della cartella bindata all'interno del container da sincronizzare"
-    option :local_folder, required: false, type: :string, desc: "path della cartella dove sincronizzare il comando"
+    option :local_folder, required: true, type: :string, desc: "path della cartella dove sincronizzare il comando"
 
     def rsync_binded_to
       if yes? "ATTENZIONE, i dati remoti verranno sovrascritti/cancellati da quelli locali?[y,yes]"
