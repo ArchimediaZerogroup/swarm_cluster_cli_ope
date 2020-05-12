@@ -22,7 +22,7 @@ Or install it yourself as:
 
 Una volta installato lanciare il comando 
 
-```swarm_cluster_cli_ope install``` che si occuperà di configurare le varie impostazioni dell'ambiente
+```swarm_cli_ope install``` che si occuperà di configurare le varie impostazioni dell'ambiente
 
 FILE di configurazione base:
 ```json
