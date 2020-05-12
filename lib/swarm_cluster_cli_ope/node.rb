@@ -50,8 +50,7 @@ module SwarmClusterCliOpe
     # @return [OpenStruct]
     def info
       # path al file di cache
-      # TODO sarebbe da aggiornare ogni tanto, metti che uno non spegne mai il pc
-      path = "/tmp/.swarm_cluster_cli_info_cache_#{name}"
+      path = Time.now.strftime("/tmp/.swarm_cluster_cli_info_cache_#{name}-%Y%m%d%H")
       if File.exist?(path)
         i = JSON.parse(File.read(path), object_class: OpenStruct)
       else
