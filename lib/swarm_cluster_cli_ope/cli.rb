@@ -11,6 +11,8 @@ module SwarmClusterCliOpe
       true
     end
 
+    class_option :environment, required: false, type: :string, aliases: [:e]
+
     desc "install", "Creazione della configurazione base della gemma"
 
     def install
@@ -40,7 +42,9 @@ module SwarmClusterCliOpe
     desc "config", "Visualizza le configurazioni mergiate (HOME + Project configuration[#{Configuration.cfgs_project_file_name}])"
 
     def config
-      puts JSON.pretty_generate(cfgs.class.merged_configurations)
+      cfgs.env(options[:environment]) do
+        puts JSON.pretty_generate(cfgs.merged_configurations)
+      end
     end
 
 
@@ -159,9 +163,12 @@ module SwarmClusterCliOpe
     desc "configure_project STACK_NAME", "Genera il file di configurazione del progetto contenente il nome dello stack"
 
     def configure_project(stack_name)
-      cfgs.stack_name = stack_name
-      cfgs.save_project_cfgs
+      cfgs.env(options[:environment]) do |c|
+        c.stack_name = stack_name
+        c.save_project_cfgs
+      end
     end
+
 
     desc "service_shell SERVICE_NAME", "apre una shell [default bash] dentro al container"
     option :stack_name, required: false, type: :string, default: cfgs.stack_name
