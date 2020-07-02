@@ -11,7 +11,8 @@ module SwarmClusterCliOpe
       true
     end
 
-    class_option :environment, required: false, type: :string, aliases: [:e]
+    class_option :environment, required: false, type: :string, aliases: [:e],
+                 desc: "Esegue tutte le operazioni nell'env scelto, il file di configurazione dovrà avere il nome: #{Configuration.cfgs_project_file_name}.ENV"
 
     desc "install", "Creazione della configurazione base della gemma"
 

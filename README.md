@@ -36,6 +36,9 @@ FILE di configurazione base:
 3 DEBUG
 
 
+### ENV differenti
+Tutti i comandi possono essere accompagnati con -e, per scopparli nel relativo ENVIRONMENT
+
 ### Configuratione di un progetto
 Si occupa di generare nel progetto il file di configurazione in cui impostare impostazioni specifiche di progetto
 quali stack_name (.swarm_cluster_project)
