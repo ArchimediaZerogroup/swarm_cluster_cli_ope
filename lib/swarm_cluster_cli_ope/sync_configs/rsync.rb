@@ -14,10 +14,12 @@ module SwarmClusterCliOpe
       end
 
 
+      # @return [SwarmClusterCliOpe::ShellCommandResponse]
       def push
         execute(direction: :up)
       end
 
+      # @return [SwarmClusterCliOpe::ShellCommandResponse]
       def pull
         execute(direction: :down)
       end
