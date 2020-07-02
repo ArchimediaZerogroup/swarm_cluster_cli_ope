@@ -1,5 +1,5 @@
 {
-  "stack_name": "test_1",
+  "stack_name": "test1",
   "connections_maps": {
     "marino-ubuntu": "unix:///var/run/docker.sock"
   },
