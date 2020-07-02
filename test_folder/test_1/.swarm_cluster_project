@@ -3,5 +3,13 @@
   "connections_maps": {
     "marino-ubuntu": "unix:///var/run/docker.sock"
   },
-  "log_level": "3"
+  "log_level": "3",
+  "sync_configs": [{
+    "service": "second",
+    "how": "rsync",
+    "configs": {
+      "remote": "/test_bind",
+      "locale": "./uploads"
+    }
+  }]
 }

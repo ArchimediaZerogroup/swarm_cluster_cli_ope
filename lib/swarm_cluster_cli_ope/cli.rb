@@ -225,48 +225,52 @@ module SwarmClusterCliOpe
       end
     end
 
+    desc "stack_pull", "Si occupa di scaricare,utilizzando le configurazioni presenti, i dati dallo stack remoto"
+    long_desc <<-LONGDESC
+      le configurazioni sono contenute nell'array: sync_configs. \n
+      ogni configurazione è composta da: \n
+      { \n
+        service:"" \n
+        how:"" \n
+        configs:{ }\n
+      }\n
+      - service è il nome del servizio\n
+      - how è il come sincronizzare, definendo la tipologia:\n
+          - pg      -> DB\n TODO
+          - mysql   -> DB\n TODO
+          - sqlite3 -> DB\n 
+          - rsync   -> RSYNC\n
+      - configs:  è un hash con le configurazioni per ogni tipo di sincronizzazione\n
+    LONGDESC
+
+    def stack_pull
+      cfgs.env(options[:environment]) do |cfgs|
+        puts cfgs.sync_configurations.inspect
+      end
+    end
 
     private
 
     def rsync_binded(direction: :down, options: {})
       cfgs.env(options[:environment]) do |cfgs|
-        stack_name = options[:stack_name] || cfgs.stack_name
-        # trovo il container del servizio
-        container = Models::Container.find_by_service_name(options[:service_name], stack_name: stack_name)
+        cfgs.stack_name = options[:stack_name] || cfgs.stack_name
+        sync = SyncConfigs::Rsync.new(cfgs, {
+          service: options[:service_name],
+          how: 'rsync',
+          configs: {
+            local: options[:local_folder],
+            remote: options[:binded_container_folders]
+          }
+        })
 
-        if container.nil?
-          say "Container non trovato con #{stack_name}@##{options[:service_name]}"
-          exit 0
-        end
-
-
-        # trovo la cartella bindata e la relativa cartella sul nodo
-        volume = container.mapped_volumes.find { |v| v.destination == options[:binded_container_folders] and v.is_binded? }
-        if volume.nil?
-          say "Non ho trovato il volume bindato con questa destinazione all'interno del container #{options[:binded_container_folders]}"
-          exit 0
-        end
-
-        #costruisco il comando rsync fra cartella del nodo e cartella sul pc
-        cmd = ["rsync", "-zr", "--delete"]
         if direction == :down
-          cmd << "#{volume.ssh_connection_path}/."
-          # creo la cartella in locale se non esiste
-          FileUtils.mkdir_p(options[:local_folder])
-          cmd << options[:local_folder]
+          sync.pull
         end
         if direction == :up
-          cmd << "#{options[:local_folder]}/."
-          cmd << volume.ssh_connection_path
+          sync.push
         end
 
-        cmd = ShellCommandExecution.new(cmd)
 
-        say "Comando da eseguire:"
-        say "  #{cmd.string_command}"
-        if yes?("Confermare il comando?[y,yes]")
-          cmd.execute
-        end
       end
     end
   end

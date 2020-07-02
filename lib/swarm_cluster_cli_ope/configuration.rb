@@ -90,6 +90,13 @@ module SwarmClusterCliOpe
     end
 
     ##
+    # Imposta il nome dello stack
+    def stack_name=(objs)
+      stack_name #lo richiamo per fargli generare la variabile di classe
+      @stack_name[environment] = objs
+    end
+
+    ##
     # Livello di logging
     # @return [Integer]
     def logger_level
@@ -154,6 +161,23 @@ module SwarmClusterCliOpe
     # @param [String] node_id
     def get_node_by_id(node_id)
       nodes.find { |c| c.id == node_id }
+    end
+
+    ##
+    # Elenco di tutte le configurazioni di sincronizzazione
+    def sync_configurations
+      merged_configurations[:sync_configs].collect do |c|
+
+        case c[:how]
+        when 'sqlite3'
+          SyncConfigs::Sqlite3.new(self, c)
+        when 'rsync'
+          SyncConfigs::Rsync.new(self, c)
+        else
+          logger.error { "CONFIGURAIONE NON PREVISTA: #{c[:how]}" }
+        end
+
+      end.compact
     end
 
     private
