@@ -36,7 +36,7 @@ module SwarmClusterCliOpe
       unless enviroment.nil?
         @environment = enviroment.to_s.to_sym
       end
-      puts "ENV: #{@environment ? @environment : "BASE"}"
+      logger.info { "ENV: #{@environment ? @environment : "BASE"}" }
       yield self
       @environment = nil
     end
@@ -64,8 +64,10 @@ module SwarmClusterCliOpe
     #
     # @return [Array<SwarmClusterCliOpe::Node>]
     def nodes
-      return @_nodes if @_nodes
-      @_nodes = self.merged_configurations[:connections_maps].collect { |m, c| Node.new(name: m.to_s, connection_uri: c) }
+      @_nodes ||= Hash.new do |hash, key|
+        hash[key] = self.merged_configurations[:connections_maps].collect { |m, c| Node.new(name: m.to_s, connection_uri: c) }
+      end
+      @_nodes[environment]
     end
 
     ##
@@ -74,15 +76,17 @@ module SwarmClusterCliOpe
     # @param [Array<SwarmClusterCliOpe::Node>]
     # @return [Configuration]
     def nodes=(objs)
-      @_nodes = objs
+      nodes[environment] = objs
       self
     end
 
     # @return [String,NilClass] nome dello stack del progetto se configurato
     def stack_name
-      return @stack_name if @stack_name
       return nil unless self.class.exist_base?
-      @stack_name = merged_configurations[:stack_name] if merged_configurations.key?(:stack_name)
+      @stack_name ||= Hash.new do |hash, key|
+        hash[key] = merged_configurations[:stack_name] if merged_configurations.key?(:stack_name)
+      end
+      @stack_name[environment]
     end
 
     ##
@@ -126,8 +130,8 @@ module SwarmClusterCliOpe
     ##
     # Si occupa del salvataggio delle configurazioni di progetto, se abbiamo lo stack_name
     def save_project_cfgs
-      if @stack_name
-        File.open(File.join(FileUtils.pwd, self.class.cfgs_project_file_name(with_env: environment)), "wb") do |f|
+      if stack_name
+        File.open(File.join(FileUtils.pwd, self.class.cfgs_project_file_name(with_env: @environment)), "wb") do |f|
           f.write({
                     stack_name: stack_name
                   }.to_json)
@@ -186,7 +190,7 @@ module SwarmClusterCliOpe
     ## Cerca le configurazioni di progetto e le mergia se sono presenti
     # @return [Hash]
     def merged_configurations
-      return @_merged_configurations[environment] if @_merged_configurations
+      return @_merged_configurations[@environment] if @_merged_configurations
 
       @_merged_configurations = Hash.new do |hash, key|
         folder = FileUtils.pwd
@@ -202,10 +206,11 @@ module SwarmClusterCliOpe
           project_cfgs.merge!(JSON.parse(File.read(enviroment_file)).deep_symbolize_keys)
         end
 
+        logger.debug { "CONFIGS[#{@environment}]: #{project_cfgs.inspect}" }
         hash[key] = self.class.read_base.merge(project_cfgs)
       end
 
-      @_merged_configurations[environment]
+      @_merged_configurations[@environment]
 
     end
 
