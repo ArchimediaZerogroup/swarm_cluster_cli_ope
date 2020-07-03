@@ -14,12 +14,12 @@ module SwarmClusterCliOpe
 
       # @return [TrueClass, FalseClass]
       def push
-        container.copy_in(local_folder,remote_folder)
+        say "#{local_folder} -->> #{remote_folder}" if container.copy_in(local_folder,remote_folder)
       end
 
       # @return [TrueClass, FalseClass]
       def pull
-        container.copy_out(remote_folder,local_folder)
+        say "#{remote_folder} -->> #{local_folder}" if container.copy_out(remote_folder,local_folder)
       end
 
 

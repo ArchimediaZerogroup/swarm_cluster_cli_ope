@@ -243,7 +243,7 @@ module SwarmClusterCliOpe
       end
     end
 
-    desc "stacksync DIRECTION", "Si occupa di scaricare|caricare,utilizzando le configurazioni presenti, i dati dallo stack remoto"
+    desc "stacksync [DIRECTION:pull|push]", "Si occupa di scaricare|caricare,utilizzando le configurazioni presenti, i dati dallo stack remoto"
     long_desc <<-LONGDESC.gsub("\n", "\x5")
       le configurazioni sono contenute nell'array: sync_configs.
       ogni configurazione è composta da:
@@ -256,9 +256,42 @@ module SwarmClusterCliOpe
       - how è il come sincronizzare, definendo la tipologia:
       ---- pg      -> DB TODO
       ---- mysql   -> DB TODO
-      ---- sqlite3 -> DB 
+      ---- sqlite3 -> DB: viene eseguita una copia del file
       ---- rsync   -> RSYNC
       - configs:  è un hash con le configurazioni per ogni tipo di sincronizzazione
+
+      Possibili CFGS per tipologia:
+      rsync:
+      --local:   -> path cartella locale
+      --remote:  -> path cartella remota (contesto del container)
+
+      sqlite3:
+      --local:   -> path al file
+      --remote:  -> path al file remoto (contesto del container)
+
+      EXAMPLE:
+      Esempio di sincronizzazione di un file sqlite3 e una cartella
+      {
+        "stack_name": "test1",
+        "sync_configs": [
+          {
+            "service": "second",
+            "how": "rsync",
+            "configs": {
+              "remote": "/test_bind",
+              "local": "./uploads"
+            }
+          },
+          {
+            "service": "test_sqlite3",
+            "how": "sqlite3",
+            "configs": {
+              "remote": "/cartella_sqlite3/esempio.sqlite3",
+              "local": "./development.sqlite3"
+            }
+          }
+        ]
+      }
     LONGDESC
 
     def stacksync(direction)
@@ -272,7 +305,10 @@ module SwarmClusterCliOpe
                   end
       cfgs.env(options[:environment]) do |cfgs|
         cfgs.sync_configurations.each do |sync|
+          say "----------->>>>>>"
+          say "[ #{sync.class.name} ]"
           sync.send(direction)
+          say "<<<<<<-----------"
         end
       end
     end

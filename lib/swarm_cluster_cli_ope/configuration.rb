@@ -230,7 +230,6 @@ module SwarmClusterCliOpe
           project_cfgs.merge!(JSON.parse(File.read(enviroment_file)).deep_symbolize_keys)
         end
 
-        logger.debug { "CONFIGS[#{@environment}]: #{project_cfgs.inspect}" }
         hash[key] = self.class.read_base.merge(project_cfgs)
       end
 
