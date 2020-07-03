@@ -4,14 +4,15 @@
     "marino-ubuntu": "unix:///var/run/docker.sock"
   },
   "log_level": "3",
-  "sync_configs": [{
-    "service": "second",
-    "how": "rsync",
-    "configs": {
-      "remote": "/test_bind",
-      "local": "./uploads"
-    }
-  },
+  "sync_configs": [
+    {
+      "service": "second",
+      "how": "rsync",
+      "configs": {
+        "remote": "/test_bind",
+        "local": "./uploads"
+      }
+    },
     {
       "service": "test_sqlite3",
       "how": "sqlite3",
@@ -19,5 +20,6 @@
         "remote": "/cartella_sqlite3/esempio.sqlite3",
         "local": "./development.sqlite3"
       }
-    }]
+    }
+  ]
 }
