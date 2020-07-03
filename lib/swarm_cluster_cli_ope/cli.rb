@@ -181,7 +181,7 @@ module SwarmClusterCliOpe
           }
         })
 
-        puts "COMPLETATO" if  cmd.send(execute)
+        puts "COMPLETATO" if cmd.send(execute)
 
       end
     end
@@ -243,28 +243,36 @@ module SwarmClusterCliOpe
       end
     end
 
-    desc "stack_pull", "Si occupa di scaricare,utilizzando le configurazioni presenti, i dati dallo stack remoto"
-    long_desc <<-LONGDESC
-      le configurazioni sono contenute nell'array: sync_configs. \n
-      ogni configurazione è composta da: \n
-      { \n
-        service:"" \n
-        how:"" \n
-        configs:{ }\n
-      }\n
-      - service è il nome del servizio\n
-      - how è il come sincronizzare, definendo la tipologia:\n
-          - pg      -> DB\n TODO
-          - mysql   -> DB\n TODO
-          - sqlite3 -> DB\n 
-          - rsync   -> RSYNC\n
-      - configs:  è un hash con le configurazioni per ogni tipo di sincronizzazione\n
+    desc "stacksync DIRECTION", "Si occupa di scaricare|caricare,utilizzando le configurazioni presenti, i dati dallo stack remoto"
+    long_desc <<-LONGDESC.gsub("\n", "\x5")
+      le configurazioni sono contenute nell'array: sync_configs.
+      ogni configurazione è composta da:
+      { 
+       service:"" 
+       how:"" 
+       configs:{ }
+      }
+      - service è il nome del servizio
+      - how è il come sincronizzare, definendo la tipologia:
+      ---- pg      -> DB TODO
+      ---- mysql   -> DB TODO
+      ---- sqlite3 -> DB 
+      ---- rsync   -> RSYNC
+      - configs:  è un hash con le configurazioni per ogni tipo di sincronizzazione
     LONGDESC
 
-    def stack_pull
+    def stacksync(direction)
+      direction = case direction
+                  when 'push'
+                    :push
+                  when 'pull'
+                    :pull
+                  else
+                    raise "ONLY [push|pull] action accepted"
+                  end
       cfgs.env(options[:environment]) do |cfgs|
         cfgs.sync_configurations.each do |sync|
-          sync.pull
+          sync.send(direction)
         end
       end
     end
