@@ -155,16 +155,34 @@ module SwarmClusterCliOpe
 
     def cp(src, dest)
       cfgs.env(options[:environment]) do |cfgs|
-        stack_name = options[:stack_name] || cfgs.stack_name
+
+        cfgs.stack_name = options[:stack_name] || cfgs.stack_name
+
         #identifico quale dei due è il servizio e quale la path
         if src.match(/^(.*)\:/)
-          container = Models::Container.find_by_service_name(Regexp.last_match[1], stack_name: stack_name)
-          ris = container.copy_out(src.match(/\:(.*)$/)[1], dest)
+          service_name = Regexp.last_match[1]
+          remote = src.match(/\:(.*)$/)[1]
+          local = dest
+          execute = :pull
         else
-          container = Models::Container.find_by_service_name(dest.match(/^(.*)\:/)[1], stack_name: stack_name)
-          ris = container.copy_in(src, dest.match(/\:(.*)$/)[1])
+          service_name = dest.match(/^(.*)\:/)[1]
+          remote = dest.match(/\:(.*)$/)[1]
+          local = src
+          execute = :push
         end
-        puts "COMPLETATO" if ris
+
+
+        cmd = SyncConfigs::Copy.new(cfgs, {
+          service: service_name,
+          how: 'copy',
+          configs: {
+            local: local,
+            remote: remote
+          }
+        })
+
+        puts "COMPLETATO" if  cmd.send(execute)
+
       end
     end
 
@@ -245,7 +263,9 @@ module SwarmClusterCliOpe
 
     def stack_pull
       cfgs.env(options[:environment]) do |cfgs|
-        puts cfgs.sync_configurations.inspect
+        cfgs.sync_configurations.each do |sync|
+          sync.pull
+        end
       end
     end
 

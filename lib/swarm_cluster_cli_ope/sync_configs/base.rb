@@ -16,6 +16,8 @@ module SwarmClusterCliOpe
       end
 
 
+      delegate :stack_name, to: :@stack_cfgs
+
       ##
       # Funzione che dobbiamo sovrascrivere per identificare cosa fare quando scarichiamo i dati
       def pull
