@@ -9,7 +9,15 @@
     "how": "rsync",
     "configs": {
       "remote": "/test_bind",
-      "locale": "./uploads"
+      "local": "./uploads"
     }
-  }]
+  },
+    {
+      "service": "test_sqlite3",
+      "how": "sqlite3",
+      "configs": {
+        "remote": "/cartella_sqlite3/esempio.sqlite3",
+        "local": "./development.sqlite3"
+      }
+    }]
 }

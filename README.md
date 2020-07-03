@@ -101,8 +101,8 @@ nel file di configurazione creato nella home aggiungere la chiave "dev_mode":1 p
 
 ### Abbiamo due tasks swarm di simulazione
 ```shell script
-docker stack deploy -c test_folder/test_1/docker_compose.yml test1
-docker stack deploy -c test_folder/test_1/docker_compose.yml test1_staging
+docker stack deploy -c test_folder/test_1/docker-compose.yml test1
+docker stack deploy -c test_folder/test_1/docker-compose.yml test1_staging
 docker stack deploy -c test_folder/test_2/docker_compose.yml test2
 ```
 

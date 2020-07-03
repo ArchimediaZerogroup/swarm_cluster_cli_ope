@@ -1,3 +1,8 @@
+module SwarmClusterCliOpe
+  module SyncConfigs
+    class Sqlite3 < Copy
 
-class Sqlite3
+
+    end
+  end
 end

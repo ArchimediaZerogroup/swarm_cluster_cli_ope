@@ -18,3 +18,13 @@ services:
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - ./cartella_bindata:/test_bind
+
+  test_sqlite3:
+    image: ubuntu
+    command: '/bin/bash -c "touch /cartella_sqlite3/esempio.sqlite3 && trap : TERM INT; sleep infinity & wait"'
+    volumes:
+      - sqlite:/cartella_sqlite3
+
+volumes:
+  sqlite:
+
