@@ -173,8 +173,11 @@ module SwarmClusterCliOpe
           SyncConfigs::Sqlite3.new(self, c)
         when 'rsync'
           SyncConfigs::Rsync.new(self, c)
+        when 'mysql'
+          SyncConfigs::Mysql.new(self, c)
         else
           logger.error { "CONFIGURAIONE NON PREVISTA: #{c[:how]}" }
+          nil
         end
 
       end.compact
