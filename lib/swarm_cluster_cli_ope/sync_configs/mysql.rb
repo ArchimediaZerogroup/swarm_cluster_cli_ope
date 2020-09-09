@@ -11,6 +11,19 @@ module SwarmClusterCliOpe
           local_container.copy_in(tmp_file, tmp_file)
           local_container.exec("bash -c 'zcat #{tmp_file} | mysql  -u #{local.mysql_user} --password=#{local.mysql_password} #{local.database_name}'")
         end
+        true
+      end
+
+      # @return [TrueClass, FalseClass]
+      def push
+        resume('PUSH')
+        if yes?("ATTENZIONE !!!!!!PUSH!!!!! - Confermare il comando?[y,yes]")
+          tmp_file = "/tmp/#{Time.now.to_i}.sql.gz"
+          local_container.exec("bash -c 'mysqldump  -u #{local.mysql_user} --password=#{local.mysql_password} #{local.database_name} | gzip -c -f' > #{tmp_file}")
+          container.copy_in(tmp_file, tmp_file)
+          container.exec("bash -c 'zcat #{tmp_file} | mysql  -u #{remote.mysql_user} --password=#{remote.mysql_password} #{remote.database_name}'")
+        end
+        true
       end
 
       # @return [SwarmClusterCliOpe::SyncConfigs::Mysql::EnvConfigs]
@@ -38,8 +51,7 @@ module SwarmClusterCliOpe
       ##
       # Funzione che ricapitola le informazioni utilizzate per eseguire l'operazione
       def resume(direction)
-        logger.info do
-          "RESUME - #{direction}
+        puts "RESUME - #{direction}
             service: #{service}
             local:
               service_name: #{local.service_name}
@@ -52,7 +64,6 @@ module SwarmClusterCliOpe
               mysql_user: #{remote.mysql_user}
               mysql_password: #{remote.mysql_password}"
 
-        end
       end
 
       private
