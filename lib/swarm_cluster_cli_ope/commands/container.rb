@@ -9,6 +9,13 @@ module SwarmClusterCliOpe
         end.execute
       end
 
+      def exec(container_id,cmd_str)
+        self.base_suffix_command = []
+        command do |cmd|
+          cmd.add("exec #{container_id} #{cmd_str}")
+        end.execute
+      end
+
       ##
       # Esegue il ps sui container, possibile filtrare passando nome stack e/o nome servizio
       # @param [String] service_name

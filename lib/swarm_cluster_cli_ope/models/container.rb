@@ -4,7 +4,7 @@ module SwarmClusterCliOpe
 
       #@return [String]
       attr_accessor :name
-      #@return [String]
+      #@return [String] id del container
       attr_accessor :id
       #@return [String] nome dell'immagine
       attr_accessor :image
@@ -49,6 +49,12 @@ module SwarmClusterCliOpe
       # @param [String] dest destinazione a cui copiare
       def copy_out(src, dest)
         docker_command.cp("#{id}:#{src}", dest).success?
+      end
+
+      ##
+      # Esegue il comando passato
+      def exec(cmd)
+        docker_command.exec(id, cmd)
       end
 
       ##
