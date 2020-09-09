@@ -23,11 +23,7 @@ module SwarmClusterCliOpe
       end
 
 
-      private
-      # @return [SwarmClusterCliOpe::Models::Container]
-      def container
-        Models::Container.find_by_service_name(service, stack_name: stack_name)
-      end
+
 
 
     end

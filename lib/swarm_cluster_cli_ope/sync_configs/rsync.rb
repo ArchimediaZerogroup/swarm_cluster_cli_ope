@@ -28,9 +28,6 @@ module SwarmClusterCliOpe
       private
       def execute(direction: :down)
 
-        # trovo il container del servizio
-        container = Models::Container.find_by_service_name(service, stack_name: stack_name)
-
         if container.nil?
           say "Container non trovato con #{stack_name}@##{service}"
           exit 0

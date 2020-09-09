@@ -95,16 +95,95 @@ Utilizzare `rsync_binded_from` per scaricare e `rsync_binded_to` per caricare
 swarm_cli_ope rsync_binded_from --stack-name=STACK_NAME --service_name NOME_SERVIZIO_SENZA_STACK --binded-container-folders CARTELLA_CONTAINER --local-folder CARTELLA_DESTINAZIONE
 ```
 
+### stacksync
+Si occupa di scaricare|caricare,utilizzando le configurazioni presenti, i dati dallo stack remoto
+
+Le configurazioni sono contenute nell'array: sync_configs.
+
+ogni configurazione è composta da:
+      
+```json 
+    { 
+       service:"" 
+       how:"" 
+       configs:{ }
+      }
+```
+
+- service è il nome del servizio
+- how è il come sincronizzare, definendo la tipologia:
+  - pg      -> DB TODO
+  - mysql   -> DB: dump del db con mysqldump
+  - sqlite3 -> DB: viene eseguita una copia del file
+  - rsync   -> RSYNC
+- configs:  è un hash con le configurazioni per ogni tipo di sincronizzazione
+
+Possibili CFGS per tipologia:
+
+- rsync:
+  - local:   -> path cartella locale
+  - remote:  -> path cartella remota (contesto del container)
+- sqlite3:
+  - local:   -> path al file
+  - remote:  -> path al file remoto (contesto del container)
+- mysql:
+  - local:  -> hash di configurazioni per il DB locale
+    - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
+    - mysql_password_env: "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD 
+    - mysql_user_env: "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER 
+    - database_name: "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE         
+  - remote: -> hash di configurazioni per il DB remoto
+    - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
+    - mysql_password_env: "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD
+    - mysql_user_env: "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER
+    - database_name: "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE
+
+#### EXAMPLE:
+Esempio di sincronizzazione di un file sqlite3 e una cartella
+
+```json 
+    {
+    "stack_name": "test1",
+    "sync_configs": [
+      {
+        "service": "second",
+        "how": "rsync",
+        "configs": {
+          "remote": "/test_bind",
+          "local": "./uploads"
+        }
+      },
+      {
+        "service": "test_sqlite3",
+        "how": "sqlite3",
+        "configs": {
+          "remote": "/cartella_sqlite3/esempio.sqlite3",
+          "local": "./development.sqlite3"
+        }
+      }
+    ]
+    }
+```
+
+
 ## Development
 
 nel file di configurazione creato nella home aggiungere la chiave "dev_mode":1 per collegarsi localmente
 
 ### Abbiamo due tasks swarm di simulazione
 ```shell script
-docker stack deploy -c test_folder/test_1/docker-compose.yml test1
+docker stack deploy -c test_folder/test_1/docker-compose.yml test_1_stack
 docker stack deploy -c test_folder/test_1/docker-compose.yml test1_staging
 docker stack deploy -c test_folder/test_2/docker_compose.yml test2
 ```
+
+Per simulare una sincronizzazione fra locale e remoto di un mysql, lanciamo lo stesso stack anche come compose, in modo
+da trovarci sulla stessa macchina con tutte e due le situazioni
+```shell script
+docker-compose up -f test_folder/test_1/docker-compose-local.yml -d
+```
+
+
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version 
 number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git 

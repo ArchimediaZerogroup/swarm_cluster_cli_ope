@@ -1,10 +1,28 @@
 {
-  "stack_name": "test1",
+  "stack_name": "test_1_stack",
   "connections_maps": {
     "marino-ubuntu": "unix:///var/run/docker.sock"
   },
-  "log_level": "3",
+  "log_level": "0",
   "sync_configs": [
+    {
+      "service": "db",
+      "how": "mysql",
+      "configs": {
+        "local": {
+          "service": "db",
+          "mysql_password_env": "MYSQL_PASSWORD",
+          "mysql_user_env": "MYSQL_USER",
+          "database_name": "MYSQL_DATABASE"
+        },
+        "remote": {
+          "service": "db",
+          "mysql_password_env": "MYSQL_PASSWORD",
+          "mysql_user_env": "MYSQL_USER_FILE",
+          "database_name": "MYSQL_DATABASE"
+        }
+      }
+    },
     {
       "service": "second",
       "how": "rsync",

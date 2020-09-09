@@ -164,6 +164,15 @@ module SwarmClusterCliOpe
     end
 
     ##
+    # Indica il nome del progetto locale compose, quella parte di nome che viene attaccata in fronte
+    # ad ogni nome di servizio locale, e che come default è il nome della cartella in cui risiede
+    # il docker-compose.yml file
+    # @return [String]
+    def local_compose_project_name
+      File.basename(FileUtils.pwd)
+    end
+
+    ##
     # Elenco di tutte le configurazioni di sincronizzazione
     def sync_configurations
       merged_configurations[:sync_configs].collect do |c|
@@ -173,8 +182,11 @@ module SwarmClusterCliOpe
           SyncConfigs::Sqlite3.new(self, c)
         when 'rsync'
           SyncConfigs::Rsync.new(self, c)
+        when 'mysql'
+          SyncConfigs::Mysql.new(self, c)
         else
           logger.error { "CONFIGURAIONE NON PREVISTA: #{c[:how]}" }
+          nil
         end
 
       end.compact

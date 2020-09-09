@@ -19,7 +19,6 @@ module SwarmClusterCliOpe
 
       ##
       # Containers del servizio
-
       # @return [Array<SwarmClusterCliOpe::Container>]
       def containers
         tasks.collect { |t| t.container }

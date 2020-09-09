@@ -1,9 +1,12 @@
 module SwarmClusterCliOpe
   module SyncConfigs
     class Base < Thor::Shell::Basic
-
+      include LoggerConcern
       #@return [String] nome del servizio dello stack
       attr_accessor :service
+
+      #@return [Hash] configurazioni di sincro
+      attr_accessor :configs
 
       # @param [Hash] configs
       # @param [Continuation] stack_cfgs
@@ -28,6 +31,12 @@ module SwarmClusterCliOpe
       # Funzione che dobbiamo sovrascrivere per identificare cosa fare quando carichiamo i dati
       def push
         raise "TO OVERRIDE"
+      end
+
+      private
+      # @return [SwarmClusterCliOpe::Models::Container]
+      def container
+        Models::Container.find_by_service_name(service, stack_name: stack_name)
       end
 
     end
