@@ -269,6 +269,19 @@ module SwarmClusterCliOpe
       --local:   -> path al file
       --remote:  -> path al file remoto (contesto del container)
 
+      mysql:
+      -- local:  -> hash di configurazioni per il DB locale
+          "service": "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
+          "mysql_password_env": "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD 
+          "mysql_user_env": "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER 
+          "database_name": "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE         
+      -- remote: -> hash di configurazioni per il DB remoto
+          "service": "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
+          "mysql_password_env": "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD
+          "mysql_user_env": "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER
+          "database_name": "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE
+        
+
       EXAMPLE:
       Esempio di sincronizzazione di un file sqlite3 e una cartella
       {
