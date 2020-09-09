@@ -27,13 +27,28 @@ module SwarmClusterCliOpe
       end
 
 
-      def self.define_cfgs(name, default: nil, configuration_name: nil)
+      ##
+      # Costruisce i metodi che restituiscono i valori delle configurazioni
+      #
+      # @param [String,Symbol] name -> nome della stringa con cui viene generato il metodo
+      # @param [String,Symbol] default_env -> nome env default nel caso non sia passato
+      # @param [String,Symbol] configuration_name -> nome della configurazione da utilizzare per estrapolare la configurazione
+      #                                           in automatico viene tenuto conto se cercare per la versione
+      #                                           con _env o senza....precedenza SENZA
+      def self.define_cfgs(name, default_env:, configuration_name:)
         configuration_name ||= name
 
         define_method(name) do
           return self.instance_variable_get("@#{name}") if self.instance_variable_defined?("@#{name}")
-          env_var = @configs[configuration_name.to_sym] || default
-          self.instance_variable_set("@#{name}", find_env_file_variable(env_var))
+
+          #valore restituito direttamente dalla configurazione
+          if @configs.key?(configuration_name)
+            value = @configs["#{configuration_name}".to_sym]
+          else
+            env_var = @configs["#{configuration_name}_env".to_sym] || default_env
+            value = find_env_file_variable(env_var)
+          end
+          self.instance_variable_set("@#{name}", value)
         end
 
       end

@@ -11,8 +11,8 @@
       "configs": {
         "local": {
           "service": "db",
-          "mysql_password_env": "MYSQL_PASSWORD",
-          "mysql_user_env": "MYSQL_USER",
+          "mysql_password": "root",
+          "mysql_user": "root",
           "database_name_env": "MYSQL_DATABASE"
         },
         "remote": {
