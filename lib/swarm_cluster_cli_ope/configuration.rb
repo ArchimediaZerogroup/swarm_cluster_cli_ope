@@ -174,8 +174,11 @@ module SwarmClusterCliOpe
 
     ##
     # Elenco di tutte le configurazioni di sincronizzazione
+    # @return [Array]
     def sync_configurations
-      merged_configurations[:sync_configs].collect do |c|
+      cfgs = merged_configurations[:sync_configs]
+      return [] if cfgs.nil? or !cfgs.is_a?(Array)
+      cfgs.collect do |c|
 
         case c[:how]
         when 'sqlite3'

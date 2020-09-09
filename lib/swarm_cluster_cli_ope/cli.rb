@@ -317,11 +317,16 @@ module SwarmClusterCliOpe
                     raise "ONLY [push|pull] action accepted"
                   end
       cfgs.env(options[:environment]) do |cfgs|
-        cfgs.sync_configurations.each do |sync|
-          say "----------->>>>>>"
-          say "[ #{sync.class.name} ]"
-          sync.send(direction)
-          say "<<<<<<-----------"
+        sync_cfgs = cfgs.sync_configurations
+        if sync_cfgs.empty?
+          say "Attenzione, configurazioni di sincronizzazione vuoto. Leggere la documentazione"
+        else
+          sync_cfgs.each do |sync|
+            say "----------->>>>>>"
+            say "[ #{sync.class.name} ]"
+            sync.send(direction)
+            say "<<<<<<-----------"
+          end
         end
       end
     end
