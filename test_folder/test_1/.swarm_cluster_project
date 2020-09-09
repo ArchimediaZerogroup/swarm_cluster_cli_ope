@@ -1,24 +1,24 @@
 {
-  "stack_name": "test1",
+  "stack_name": "test_1_stack",
   "connections_maps": {
     "marino-ubuntu": "unix:///var/run/docker.sock"
   },
   "log_level": "3",
   "sync_configs": [
     {
-      "service": "second",
-      "how": "rsync",
+      "service": "db",
+      "how": "mysql",
       "configs": {
-        "remote": "/test_bind",
-        "local": "./uploads"
-      }
-    },
-    {
-      "service": "test_sqlite3",
-      "how": "sqlite3",
-      "configs": {
-        "remote": "/cartella_sqlite3/esempio.sqlite3",
-        "local": "./development.sqlite3"
+        "local": {
+          "mysql_password_env": "MYSQL_PASSWORD",
+          "mysql_user_env": "MYSQL_USER",
+          "database_name": "MYSQL_DATABASE"
+        },
+        "remote": {
+          "mysql_password_env": "MYSQL_PASSWORD",
+          "mysql_user_env": "MYSQL_USER_FILE",
+          "database_name": "MYSQL_DATABASE"
+        }
       }
     }
   ]

@@ -101,7 +101,7 @@ nel file di configurazione creato nella home aggiungere la chiave "dev_mode":1 p
 
 ### Abbiamo due tasks swarm di simulazione
 ```shell script
-docker stack deploy -c test_folder/test_1/docker-compose.yml test1_stack
+docker stack deploy -c test_folder/test_1/docker-compose.yml test_1_stack
 docker stack deploy -c test_folder/test_1/docker-compose.yml test1_staging
 docker stack deploy -c test_folder/test_2/docker_compose.yml test2
 ```
@@ -109,7 +109,7 @@ docker stack deploy -c test_folder/test_2/docker_compose.yml test2
 Per simulare una sincronizzazione fra locale e remoto di un mysql, lanciamo lo stesso stack anche come compose, in modo
 da trovarci sulla stessa macchina con tutte e due le situazioni
 ```shell script
-docker-compose up -f test_folder/test_1/docker-compose.yml -d
+docker-compose up -f test_folder/test_1/docker-compose-local.yml -d
 ```
 
 
