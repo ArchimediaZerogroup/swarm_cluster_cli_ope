@@ -13,13 +13,13 @@
           "service": "db",
           "mysql_password_env": "MYSQL_PASSWORD",
           "mysql_user_env": "MYSQL_USER",
-          "database_name": "MYSQL_DATABASE"
+          "database_name_env": "MYSQL_DATABASE"
         },
         "remote": {
           "service": "db",
           "mysql_password_env": "MYSQL_PASSWORD",
           "mysql_user_env": "MYSQL_USER_FILE",
-          "database_name": "MYSQL_DATABASE"
+          "database_name_env": "MYSQL_DATABASE"
         }
       }
     },

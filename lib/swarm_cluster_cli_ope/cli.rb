@@ -274,12 +274,12 @@ module SwarmClusterCliOpe
           "service": "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
           "mysql_password_env": "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD 
           "mysql_user_env": "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER 
-          "database_name": "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE         
+          "database_name_env": "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE         
       -- remote: -> hash di configurazioni per il DB remoto
           "service": "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
           "mysql_password_env": "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD
           "mysql_user_env": "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER
-          "database_name": "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE
+          "database_name_env": "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE
         
 
       EXAMPLE:

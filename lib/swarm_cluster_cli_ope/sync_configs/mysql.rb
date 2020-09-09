@@ -41,7 +41,7 @@ module SwarmClusterCliOpe
       # Classe interna che rappresenta le configurazioni del DB
       class EnvConfigs < SwarmClusterCliOpe::SyncConfigs::EnvConfigs
 
-        define_cfgs :database_name, default: "MYSQL_DATABASE"
+        define_cfgs :database_name, default_env: "MYSQL_DATABASE", configuration_name: :database_name
         define_cfgs :mysql_user, default: "MYSQL_USER", configuration_name: :mysql_user_env
         define_cfgs :mysql_password, default: "MYSQL_PASSWORD", configuration_name: :mysql_password_env
 
