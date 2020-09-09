@@ -7,7 +7,8 @@ module SwarmClusterCliOpe
         resume
         # container.exec("echo $MYSQL_ROOT_PASSWORD")
         # container.exec("env")
-        # container.exec("echo $MYSQL_ROOT_PASSWORD && mysqldump #{database_name} -u root --password=$MYSQL_ROOT_PASSWORD")
+        tmp_file = "/tmp/#{Time.now.to_i}.sql.gz"
+        container.exec("bash -c 'mysqldump  -u #{remote.mysql_user} --password=#{remote.mysql_password} #{remote.database_name} | gzip -c -f' > #{tmp_file}")
       end
 
       # @return [SwarmClusterCliOpe::SyncConfigs::Mysql::DbConfigs]
