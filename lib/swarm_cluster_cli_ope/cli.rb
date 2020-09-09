@@ -255,7 +255,7 @@ module SwarmClusterCliOpe
       - service è il nome del servizio
       - how è il come sincronizzare, definendo la tipologia:
       ---- pg      -> DB TODO
-      ---- mysql   -> DB TODO
+      ---- mysql   -> DB dump con mysql
       ---- sqlite3 -> DB: viene eseguita una copia del file
       ---- rsync   -> RSYNC
       - configs:  è un hash con le configurazioni per ogni tipo di sincronizzazione

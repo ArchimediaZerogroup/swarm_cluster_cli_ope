@@ -113,7 +113,7 @@ ogni configurazione è composta da:
 - service è il nome del servizio
 - how è il come sincronizzare, definendo la tipologia:
   - pg      -> DB TODO
-  - mysql   -> DB: SOLO PULL TODO
+  - mysql   -> DB: dump del db con mysqldump
   - sqlite3 -> DB: viene eseguita una copia del file
   - rsync   -> RSYNC
 - configs:  è un hash con le configurazioni per ogni tipo di sincronizzazione
