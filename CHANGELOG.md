@@ -1,5 +1,9 @@
 ## Changelog
 
+# 0.4
+- implementazione push pull con il comando **stacksync** di pg
+- controllo di versione sul file caricato rispeto a gemma, con conseguente warning 
+
 # 0.3
 - implementazione push pull con il comando **stacksync** di mysql
 
