@@ -170,7 +170,7 @@ module SwarmClusterCliOpe
     # il docker-compose.yml file
     # @return [String]
     def local_compose_project_name
-      File.basename(FileUtils.pwd)
+      File.basename(FileUtils.pwd).downcase
     end
 
     ##
