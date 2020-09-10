@@ -140,7 +140,8 @@ module SwarmClusterCliOpe
       if stack_name
         File.open(File.join(FileUtils.pwd, self.class.cfgs_project_file_name(with_env: @environment)), "wb") do |f|
           f.write({
-                    stack_name: stack_name
+                    stack_name: stack_name,
+                    version: VERSION
                   }.to_json)
         end
       end
