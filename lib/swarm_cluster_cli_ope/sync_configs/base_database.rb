@@ -2,14 +2,14 @@ module SwarmClusterCliOpe
   module SyncConfigs
     class BaseDatabase < Base
 
-      # @return [SwarmClusterCliOpe::SyncConfigs::Mysql::EnvConfigs]
+      # @return [SwarmClusterCliOpe::SyncConfigs::EnvConfigs]
       def remote
-        EnvConfigs.new(self, @configs[:configs][:remote] || {}, -> { container })
+        self.class::EnvConfigs.new(self, @configs[:configs][:remote] || {}, -> { container })
       end
 
-      # @return [SwarmClusterCliOpe::SyncConfigs::Mysql::EnvConfigs]
+      # @return [SwarmClusterCliOpe::SyncConfigs::EnvConfigs]
       def local
-        EnvConfigs.new(self, @configs[:configs][:local] || {}, -> { local_container })
+        self.class::EnvConfigs.new(self, @configs[:configs][:local] || {}, -> { local_container })
       end
 
       ##
