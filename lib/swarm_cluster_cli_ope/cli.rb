@@ -270,17 +270,40 @@ module SwarmClusterCliOpe
       --remote:  -> path al file remoto (contesto del container)
 
       mysql:
-      -- local:  -> hash di configurazioni per il DB locale
-          "service": "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
-          "mysql_password_env": "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD 
-          "mysql_user_env": "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER 
-          "database_name_env": "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE         
-      -- remote: -> hash di configurazioni per il DB remoto
-          "service": "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
-          "mysql_password_env": "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD
-          "mysql_user_env": "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER
-          "database_name_env": "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE
-        
+      --local:  -> hash di configurazioni per il DB locale
+        - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
+        - mysql_password_env: "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD 
+        - mysql_password: "root"                -> valore in chiaro, in sostituzione della variabile ambiente, DEFAULT: root
+        - mysql_user_env: "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER 
+        - mysql_user: "root"                    -> valore in chiaro, in sostituzione della variabile ambiente, DEFAULT: root
+        - database_name_env: "MYSQL_DATABASE"   -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE         
+        - database_name: "nome_db"       -> valore in chiaro, in sostituzione della variabile ambiente         
+      --remote: -> hash di configurazioni per il DB remoto
+        - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
+        - mysql_password_env: "MYSQL_PASSWORD"  -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: MYSQL_PASSWORD 
+        - mysql_password: "root"                -> valore in chiaro, in sostituzione della variabile ambiente, DEFAULT: root
+        - mysql_user_env: "MYSQL_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: MYSQL_USER 
+        - mysql_user: "root"              -> valore in chiaro, in sostituzione della variabile ambiente, DEFAULT: root
+        - database_name_env: "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE         
+        - database_name: "MYSQL_DATABASE"       -> valore in chiaro, in sostituzione della variabile ambiente     
+      pg:
+      --local:  -> hash di configurazioni per il DB locale
+        - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
+        - pg_password_env: "POSTGRES_USER"      -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: POSTGRES_PASSWORD 
+        - pg_password: ""                       -> valore in chiaro, in sostituzione della variabile ambiente
+        - pg_user_env: "POSTGRES_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: POSTGRES_USER 
+        - pg_user: "postgres"                   -> valore in chiaro, in sostituzione della variabile ambiente, DEFAULT: postgres
+        - database_name_env: "POSTGRES_DB"      -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: POSTGRES_DB         
+        - database_name: "nome_db"              -> valore in chiaro, in sostituzione della variabile ambiente             
+      --remote: -> hash di configurazioni per il DB remoto
+        - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
+        - pg_password_env: "POSTGRES_USER"      -> variabile ambiente interna al servizio contenente PASSWORD, DEFAULT: POSTGRES_PASSWORD 
+        - pg_password: ""                       -> valore in chiaro, in sostituzione della variabile ambiente
+        - pg_user_env: "POSTGRES_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: POSTGRES_USER 
+        - pg_user: "postgres"                   -> valore in chiaro, in sostituzione della variabile ambiente, DEFAULT: postgres
+        - database_name_env: "POSTGRES_DB"      -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: POSTGRES_DB         
+        - database_name: "nome_db"              -> valore in chiaro, in sostituzione della variabile ambiente     
+              
 
       EXAMPLE:
       Esempio di sincronizzazione di un file sqlite3 e una cartella
