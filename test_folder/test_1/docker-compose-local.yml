@@ -9,6 +9,13 @@ services:
       MYSQL_PASSWORD: examplepass
       MYSQL_ROOT_PASSWORD: root
 
+  pg_locale:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: example_pwd_dev
+      POSTGRES_DB: mio_db_dev
+      POSTGRES_USER: utente_dev
+
 
   second:
     image: wordpress

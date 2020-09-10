@@ -14,6 +14,13 @@ services:
         target: /esempio_file_mysql_username
 
 
+  db_pg:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: mio_db
+
+
   second:
     image: wordpress
     environment:
