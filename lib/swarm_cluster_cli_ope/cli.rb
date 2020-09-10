@@ -243,6 +243,11 @@ module SwarmClusterCliOpe
       end
     end
 
+    desc "version", "versione della cli"
+    def version
+      say VERSION
+    end
+
     desc "stacksync [DIRECTION:pull|push]", "Si occupa di scaricare|caricare,utilizzando le configurazioni presenti, i dati dallo stack remoto"
     long_desc <<-LONGDESC.gsub("\n", "\x5")
       le configurazioni sono contenute nell'array: sync_configs.
