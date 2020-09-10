@@ -180,7 +180,7 @@ docker stack deploy -c test_folder/test_2/docker_compose.yml test2
 Per simulare una sincronizzazione fra locale e remoto di un mysql, lanciamo lo stesso stack anche come compose, in modo
 da trovarci sulla stessa macchina con tutte e due le situazioni
 ```shell script
-docker-compose up -f test_folder/test_1/docker-compose-local.yml -d
+docker-compose -f test_folder/test_1/docker-compose-local.yml up -d
 ```
 
 
