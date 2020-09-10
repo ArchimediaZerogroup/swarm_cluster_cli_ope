@@ -4,12 +4,12 @@ module SwarmClusterCliOpe
 
       # @return [SwarmClusterCliOpe::SyncConfigs::EnvConfigs]
       def remote
-        self.class::EnvConfigs.new(self, @configs[:configs][:remote] || {}, -> { container })
+        self.class::EnvConfigs.new(self, @configs.dig(:configs, :remote) || {}, -> { container })
       end
 
       # @return [SwarmClusterCliOpe::SyncConfigs::EnvConfigs]
       def local
-        self.class::EnvConfigs.new(self, @configs[:configs][:local] || {}, -> { local_container })
+        self.class::EnvConfigs.new(self, @configs.dig(:configs, :local) || {}, -> { local_container })
       end
 
       ##
