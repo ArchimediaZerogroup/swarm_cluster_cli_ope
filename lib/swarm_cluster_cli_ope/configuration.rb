@@ -249,6 +249,12 @@ module SwarmClusterCliOpe
         hash[key] = self.class.read_base.merge(project_cfgs)
       end
 
+      configuration_version = @_merged_configurations[@environment][:version]
+      if Gem::Version.new(configuration_version) > Gem::Version.new(VERSION)
+        puts "WARNING: Versione del file di configurazione [#{configuration_version}] più aggiornato della gemma [#{VERSION}], eseguire upgrade
+              gem update swarm_cluster_cli_ope"
+      end
+
       @_merged_configurations[@environment]
 
     end
