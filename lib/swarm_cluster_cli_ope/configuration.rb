@@ -188,6 +188,8 @@ module SwarmClusterCliOpe
           SyncConfigs::Rsync.new(self, c)
         when 'mysql'
           SyncConfigs::Mysql.new(self, c)
+        when 'pg'
+          SyncConfigs::PostGres.new(self, c)
         else
           logger.error { "CONFIGURAIONE NON PREVISTA: #{c[:how]}" }
           nil
