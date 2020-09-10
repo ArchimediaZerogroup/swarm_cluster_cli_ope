@@ -34,6 +34,8 @@ module SwarmClusterCliOpe
         define_cfgs :username, default_env: "MYSQL_USER", configuration_name: :mysql_user, default_value: 'root'
         define_cfgs :password, default_env: "MYSQL_PASSWORD", configuration_name: :mysql_password, default_value: 'root'
 
+        define_cfgs :database_version, default_env: "MYSQL_MAJOR", configuration_name: :mysql_version
+
       end
 
 

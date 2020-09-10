@@ -28,11 +28,13 @@ module SwarmClusterCliOpe
               database_name: #{local.database_name}
               username: #{local.username}
               password: #{local.password}
+              version: #{local.database_version}
             remote:
               service_name: #{remote.service_name}
               database_name: #{remote.database_name}
               username: #{remote.username}
-              password: #{remote.password}"
+              password: #{remote.password}
+              version: #{remote.database_version}"
 
       end
 
