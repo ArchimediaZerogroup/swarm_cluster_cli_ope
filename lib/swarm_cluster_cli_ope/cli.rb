@@ -325,6 +325,7 @@ module SwarmClusterCliOpe
             say "----------->>>>>>"
             say "[ #{sync.class.name} ]"
             sync.send(direction)
+            say "COMPLETE"
             say "<<<<<<-----------"
           end
         end
