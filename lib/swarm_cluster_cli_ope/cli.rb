@@ -14,6 +14,10 @@ module SwarmClusterCliOpe
     class_option :environment, required: false, type: :string, aliases: [:e],
                  desc: "Esegue tutte le operazioni nell'env scelto, il file di configurazione dovrà avere il nome: #{Configuration.cfgs_project_file_name}.ENV"
 
+
+    desc "k8s SUBCOMMAND ...ARGS", "Gestisce un set di comandi specifici per K8s"
+    subcommand "k8s", K8s
+
     desc "install", "Creazione della configurazione base della gemma"
 
     def install
