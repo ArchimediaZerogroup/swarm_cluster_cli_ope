@@ -1,4 +1,3 @@
-require 'kubeclient'
 module SwarmClusterCliOpe
   class K8s < Thor
     include LoggerConcern
@@ -11,8 +10,6 @@ module SwarmClusterCliOpe
 
 
     desc "rsync <src> <dst>", "esegue un rsync dalla cartella (viene sincronizzato il contenuto)"
-
-
     def rsync(src, dst)
       if yes? "Attenzione, i dati locali o remoti verranno sovrascritti/cancellati?[y,yes]"
 
@@ -33,12 +30,6 @@ module SwarmClusterCliOpe
         puts "#{src} #{direction} #{dst}"
 
         cfgs.env(options[:environment]) do |cfgs|
-          config = Kubeclient::Config.read(ENV['KUBECONFIG'] || "#{Dir.home}/.kube/config")
-
-          context = config.context # attuale contesto
-
-          puts "Stiamo utilizzando il contesto: #{context.api_endpoint}"
-
           base_cmd = ["kubectl", "-n #{cfgs.stack_name}"]
 
           cmd = ShellCommandExecution.new([*base_cmd, "exec #{podname}", "--", 'bash -c "apt update && apt install -yq rsync psmisc"'])
