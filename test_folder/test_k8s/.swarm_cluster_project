@@ -1,4 +1,17 @@
 {
   "stack_name": "test-rsync",
-  "log_level": "3"
+  "connections_maps": {
+    "context": "minikube"
+  },
+  "log_level": "3",
+  "sync_configs": [
+    {
+      "service": "second",
+      "how": "rsync",
+      "configs": {
+        "remote": " /test_shared",
+        "local": "./rsync_folder"
+      }
+    }
+  ]
 }
