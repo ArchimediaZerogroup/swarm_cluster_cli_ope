@@ -193,7 +193,7 @@ Esempio di sincronizzazione di un file sqlite3 e una cartella
 
 nel file di configurazione creato nella home aggiungere la chiave "dev_mode":1 per collegarsi localmente
 
-### Abbiamo due tasks swarm di simulazione
+### Abbiamo due tasks SWARM di simulazione
 ```shell script
 docker stack deploy -c test_folder/test_1/docker-compose.yml test_1_stack
 docker stack deploy -c test_folder/test_1/docker-compose.yml test1_staging
@@ -207,6 +207,7 @@ docker-compose -f test_folder/test_1/docker-compose-local.yml up -d
 ```
 
 
+### Per Kubernetes dobbiamo avere minikube installato
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version 
 number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git 
