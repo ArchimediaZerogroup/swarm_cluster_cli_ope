@@ -45,9 +45,9 @@ module SwarmClusterCliOpe
           if cmd.execute.failed?
             puts "Problemi nell'installazione di rsync nel pod"
           else
-            cmd = ShellCommandExecution.new([*base_cmd, "cp", File.expand_path("../k8s_rsync/rsyncd.conf", __FILE__), "#{podname}:/tmp/."])
+            cmd = ShellCommandExecution.new([*base_cmd, "cp", File.expand_path("../kubernetes/rsync_cfgs/rsyncd.conf", __FILE__), "#{podname}:/tmp/."])
             copy_1 = cmd.execute.failed?
-            cmd = ShellCommandExecution.new([*base_cmd, "cp", File.expand_path("../k8s_rsync/rsyncd.secrets", __FILE__), "#{podname}:/tmp/."])
+            cmd = ShellCommandExecution.new([*base_cmd, "cp", File.expand_path("../kubernetes/rsync_cfgs/rsyncd.secrets", __FILE__), "#{podname}:/tmp/."])
             copy_2 = cmd.execute.failed?
             cmd = ShellCommandExecution.new([*base_cmd, "exec #{podname}", "--", 'bash -c "chmod 600 /tmp/rsyncd.secrets  && chown root /tmp/*"'])
             chmod = cmd.execute.failed?
@@ -72,7 +72,7 @@ module SwarmClusterCliOpe
                 rsync_command = [
                   "rsync -az --no-o --no-g",
                   "--delete",
-                  "--password-file=#{ File.expand_path("../k8s_rsync/password", __FILE__)}"
+                  "--password-file=#{ File.expand_path("../kubernetes/rsync_cfgs/password", __FILE__)}"
                 ]
 
                 if direction == :upload
