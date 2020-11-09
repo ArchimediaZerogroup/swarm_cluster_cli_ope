@@ -9,6 +9,10 @@ module SwarmClusterCliOpe
       true
     end
 
+    def self.cfgs
+      SwarmClusterCliOpe::Kubernetes::Configuration.instance
+    end
+
 
     desc "rsync <src> <dst>", "esegue un rsync dalla cartella (viene sincronizzato il contenuto)"
     def rsync(src, dst)
