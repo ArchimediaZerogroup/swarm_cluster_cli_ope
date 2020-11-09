@@ -177,7 +177,7 @@ module SwarmClusterCliOpe
     #
     # @return [Hash]
     def self.read_base
-      raise NoBaseConfigurations unless exist_base?
+      raise NoBaseConfigurations if !exist_base? or File.size(self.base_cfg_path)==0
       JSON.parse(File.read(self.base_cfg_path)).deep_symbolize_keys
     end
 
