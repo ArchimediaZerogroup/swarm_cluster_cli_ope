@@ -13,8 +13,28 @@ module SwarmClusterCliOpe
       SwarmClusterCliOpe::Kubernetes::Configuration.instance
     end
 
+    desc "install", "Creazione della configurazione base della gemma"
+
+    def install
+      #contolliamo se presente la configurazione base nella home
+      if Configuration.exist_base?
+        say "Configurazione già presente"
+      else
+        #se non presente allora chiediamo le varie configurazioni
+        if yes? "Sei nel contesto corretto di kubectl?"
+          #scriviamo le varie configurazioni
+          cfg = cfgs
+          cfg.save_base_cfgs
+        else
+          say "Cambia prima contesto, sarà quello usato per l'installazione"
+        end
+      end
+
+    end
+
 
     desc "rsync <src> <dst>", "esegue un rsync dalla cartella (viene sincronizzato il contenuto)"
+
     def rsync(src, dst)
       if yes? "Attenzione, i dati locali o remoti verranno sovrascritti/cancellati?[y,yes]"
 
