@@ -3,6 +3,7 @@ module SwarmClusterCliOpe
     include LoggerConcern
     include ConfigurationConcern
     include Thor::Actions
+    include StackSyncConcern
 
     def self.exit_on_failure?
       true
