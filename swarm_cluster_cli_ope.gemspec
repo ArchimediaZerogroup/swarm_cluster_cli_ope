@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "zeitwerk", '~>2.3'
   spec.add_dependency "open4"
   spec.add_dependency "activesupport"
+  spec.add_dependency "kubeclient", '~>4.9'
 end
