@@ -15,7 +15,7 @@ module SwarmClusterCliOpe
        how:"" 
        configs:{ }
       }
-      - service è il nome del servizio
+      - service è il nome del servizio (o nel caso  di k8s una stringa da utilizzare come selettore labels)
       - how è il come sincronizzare, definendo la tipologia:
       ---- pg      -> DB TODO
       ---- mysql   -> DB dump con mysql
