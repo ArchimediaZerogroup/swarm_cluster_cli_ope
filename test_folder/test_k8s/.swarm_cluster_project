@@ -12,6 +12,14 @@
         "remote": "/test_shared",
         "local": "./rsync_folder"
       }
+    },
+    {
+      "service": "app=sqlite3",
+      "how": "sqlite3",
+      "configs": {
+        "remote": "/test_sqlite3/esempio.sqlite3",
+        "local": "./esempio.sqlite3"
+      }
     }
   ]
 }

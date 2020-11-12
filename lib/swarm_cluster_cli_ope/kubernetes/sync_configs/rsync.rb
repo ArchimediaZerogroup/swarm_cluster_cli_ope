@@ -1,8 +1,9 @@
 module SwarmClusterCliOpe
   module Kubernetes
     module SyncConfigs
-      class Rsync < Base
+      class Rsync < SwarmClusterCliOpe::SyncConfigs::Base
 
+        include BaseDecorator
 
         # @return [String]
         def local_folder

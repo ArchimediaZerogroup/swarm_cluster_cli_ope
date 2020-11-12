@@ -5,6 +5,7 @@ module SwarmClusterCliOpe
   class Cli < Thor
     include LoggerConcern
     include ConfigurationConcern
+    include ThorConfigurationConcern
     include Thor::Actions
 
     def self.exit_on_failure?

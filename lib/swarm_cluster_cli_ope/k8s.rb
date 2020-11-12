@@ -2,6 +2,7 @@ module SwarmClusterCliOpe
   class K8s < Thor
     include LoggerConcern
     include ConfigurationConcern
+    include ThorConfigurationConcern
     include Thor::Actions
     include StackSyncConcern
 
