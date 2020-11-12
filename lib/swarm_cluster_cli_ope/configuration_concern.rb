@@ -5,9 +5,12 @@ module SwarmClusterCliOpe
     extend ActiveSupport::Concern
 
     included do
-      # @return [SwarmClusterCliOpe::Configuration]
-      def cfgs
-        self.class.cfgs
+
+      no_commands do
+        # @return [SwarmClusterCliOpe::Configuration]
+        def cfgs
+          self.class.cfgs
+        end
       end
 
       desc "config", "Visualizza le configurazioni mergiate (HOME + Project configuration[#{Configuration.cfgs_project_file_name}])"
