@@ -81,11 +81,11 @@ module SwarmClusterCliOpe
                     "--password-file=#{ File.expand_path("../../rsync_cfgs/password", __FILE__)}"
                   ]
 
-                  if direction == :upload
-                    rsync_command << local_folder
+                  if direction == :up
+                    rsync_command << "#{local_folder}/."
                     rsync_command << "rsync://root@0.0.0.0:#{local_port}/archives#{remote_folder}"
                   else
-                    rsync_command << "rsync://root@0.0.0.0:#{local_port}/archives#{remote_folder}"
+                    rsync_command << "rsync://root@0.0.0.0:#{local_port}/archives#{remote_folder}/."
                     rsync_command << local_folder
                   end
                   say "Eseguo rsync #{rsync_command.join(" ")}"
