@@ -33,10 +33,10 @@ module SwarmClusterCliOpe
           SyncConfigs::Sqlite3
         when 'rsync'
           SyncConfigs::Rsync
-        when 'mysql'
-          SyncConfigs::Mysql
-        when 'pg'
-          SyncConfigs::PostGres
+        # when 'mysql'
+        #   SyncConfigs::Mysql
+        # when 'pg'
+        #   SyncConfigs::PostGres
         else
           logger.error { "CONFIGURAIONE NON PREVISTA: #{name}" }
           nil
