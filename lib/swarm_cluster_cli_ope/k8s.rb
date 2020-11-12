@@ -34,6 +34,12 @@ module SwarmClusterCliOpe
 
 
     desc "rsync <src> <dst>", "esegue un rsync dalla cartella (viene sincronizzato il contenuto)"
+    long_desc "Viene utilizzato rsync standard. La root del pod diviene il context di rsync, quindi
+                possiamo fare rsync con qualsiasi path del filesystem del pod.
+                Il modo con cui scrivere la path sorgente e quello di destinazione è tale a quello di rsync, quindi:
+                - voglio copiare il contenuto della cartella /ciao con il contenuto onlin del pod nella cartella
+                  /home/pippo, dovrò scrivere   /ciao/. podname:/home/pippo "
+    option :stack_name, required: false, type: :string, aliases: ["--namespace", "-n"]
 
     def rsync(src, dst)
       if yes? "Attenzione, i dati locali o remoti verranno sovrascritti/cancellati?[y,yes]"
@@ -55,6 +61,14 @@ module SwarmClusterCliOpe
         puts "#{src} #{direction} #{dst}"
 
         cfgs.env(options[:environment]) do |cfgs|
+
+          cfgs.stack_name = options[:stack_name] || cfgs.stack_name
+
+          if cfgs.stack_name.nil?
+            say "Mancata configurazione del namespace tramite argomento o .swarm_cluster_project"
+            exit
+          end
+
           base_cmd = ["kubectl", "-n #{cfgs.stack_name}"]
 
           cmd = ShellCommandExecution.new([*base_cmd, "exec #{podname}", "--", 'bash -c "apt update && apt install -yq rsync psmisc"'])
@@ -74,13 +88,13 @@ module SwarmClusterCliOpe
 
               cmd = ShellCommandExecution.new([*base_cmd, "exec -i #{podname}", "--", 'bash -c "rsync --daemon --config=/tmp/rsyncd.conf  --verbose --log-file=/tmp/rsync.log"'])
               if cmd.execute.failed?
-                puts "Rsync non startato"
+                say "Rsync non Inizializzato"
               else
                 local_port = rand(30000..40000)
 
                 p = IO.popen([*base_cmd, "port-forward #{podname} #{local_port}:873"].join(" "))
                 pid = p.pid
-                puts "PID in execuzione port forward:#{pid}"
+                say "PID in execuzione port forward:#{pid}"
 
                 sleep 1
 
@@ -98,6 +112,7 @@ module SwarmClusterCliOpe
                   rsync_command << "rsync://root@0.0.0.0:#{local_port}/archives#{podpath}"
                   rsync_command << local_path
                 end
+                say "Eseguo rsync #{rsync_command.join(" ")}"
 
 
                 cmd = ShellCommandExecution.new(rsync_command)
@@ -107,7 +122,7 @@ module SwarmClusterCliOpe
                 Process.kill("INT", pid)
 
 
-                puts "Eseguo pulizia"
+                say "Eseguo pulizia"
                 cmd = ShellCommandExecution.new([*base_cmd, "exec -i #{podname}", "--", 'bash -c "killall rsync"'])
                 cmd.execute
                 cmd = ShellCommandExecution.new([*base_cmd, "exec -i #{podname}", "--", 'bash -c "rm -fr /tmp/rsyncd*"'])
