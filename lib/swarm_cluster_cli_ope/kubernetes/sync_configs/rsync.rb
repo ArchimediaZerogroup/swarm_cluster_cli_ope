@@ -45,8 +45,6 @@ module SwarmClusterCliOpe
               exit
             end
 
-            base_cmd = ["kubectl", "-n #{namespace}"]
-
             cmd = container.exec(['bash -c "apt update && apt install -yq rsync psmisc"'])
             if cmd.execute.failed?
               puts "Problemi nell'installazione di rsync nel pod"

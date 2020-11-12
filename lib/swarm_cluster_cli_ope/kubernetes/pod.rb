@@ -53,6 +53,31 @@ module SwarmClusterCliOpe
         base_cmd(["cp", src, "#{name}:#{dst}"])
       end
 
+      ##
+      # Comando per la copia del file dal container
+      # @param [String] src
+      # @param [String] dst
+      # @return [SwarmClusterCliOpe::ShellCommandExecution]
+      def cp_out(src, dst)
+        base_cmd(["cp", "#{name}:#{src}", dst])
+      end
+
+      ##
+      # Proxy class per essere simili al container per swarm
+      # @return [TrueClass, FalseClass]
+      # @param [String] src
+      # @param [String] dst
+      def copy_in(src, dst)
+        cp_in(src, dst).execute.success?
+      end
+
+      # @param [String] src
+      # @param [String] dst
+      # @return [TrueClass, FalseClass]
+      def copy_out(src, dst)
+        cp_out(src, dst).execute.success?
+      end
+
 
       # @param [String] selector
       # @return [Pod]
@@ -94,7 +119,7 @@ module SwarmClusterCliOpe
           puts "Problemi nella ricerca del pod"
           exit
         else
-            self.new(ris.result, context: context)
+          self.new(ris.result, context: context)
         end
       end
 
