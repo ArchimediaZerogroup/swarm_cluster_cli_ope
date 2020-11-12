@@ -20,6 +20,29 @@ module SwarmClusterCliOpe
         end
       end
 
+      ##
+      # In k8s utilizziamo namespace come identificativo per avere le idee più chiare a cosi ci riferiamo
+      alias_method :namespace, :stack_name
+
+
+      ##
+      # Funzione per la restituzione della classe di sincro corretta
+      def get_syncro(name)
+        case name
+        when 'sqlite3'
+          SyncConfigs::Sqlite3
+        when 'rsync'
+          SyncConfigs::Rsync
+        when 'mysql'
+          SyncConfigs::Mysql
+        when 'pg'
+          SyncConfigs::PostGres
+        else
+          logger.error { "CONFIGURAIONE NON PREVISTA: #{name}" }
+          nil
+        end
+      end
+
 
     end
   end

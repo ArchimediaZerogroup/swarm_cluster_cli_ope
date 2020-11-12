@@ -6,10 +6,10 @@
   "log_level": "3",
   "sync_configs": [
     {
-      "service": "second",
+      "service": "app=ubuntu",
       "how": "rsync",
       "configs": {
-        "remote": " /test_shared",
+        "remote": "/test_shared",
         "local": "./rsync_folder"
       }
     }

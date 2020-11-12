@@ -30,7 +30,14 @@ module SwarmClusterCliOpe
     # @param [Object] object_class
     # @return [Array<object_class>]
     def result(object_class: OpenStruct)
-      raw_result[:stdout].split("\n").collect { |s| object_class.new(JSON.parse(s)) }
+      #tento prima di estrapolare direttamente da json e sucessivamente come array
+      begin
+        # questo per k8s, dato che abbiamo come risposta un json vero
+        object_class.new(JSON.parse( raw_result[:stdout]))
+      rescue
+        # questo nel caso siamo in swarm che ci ritorna un array di json
+        raw_result[:stdout].split("\n").collect { |s| object_class.new(JSON.parse(s)) }
+      end
     end
 
     #
