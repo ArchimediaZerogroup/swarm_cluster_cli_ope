@@ -15,7 +15,7 @@ module SwarmClusterCliOpe
       # @param [Hash] pod_description -> hash con le configurazioni ritornate da kubectl
       # @param [String] context -> se non presente utiliziamo l'attuale
       def initialize(pod_description, context:)
-        @pod_description = pod_description.deep_symbolize_keys
+        @pod_description = pod_description.to_h.deep_symbolize_keys
         @context = context
       end
 
@@ -68,16 +68,33 @@ module SwarmClusterCliOpe
         base_cmd << "--output=json"
 
         cmd = ShellCommandExecution.new(base_cmd)
-        ris = cmd.execute
+        ris = cmd.execute(allow_failure: true)
         if ris.failed?
           puts "Problemi nella ricerca del pod"
           exit
         else
           if ris.result[:items].empty?
-            logger.warn { "bbiamo trovato il pod" }
+            logger.warn { "non abbiamo trovato il pod" }
           else
             self.new(ris.result[:items].first, context: context)
           end
+        end
+      end
+
+      def self.find_by_name(name, namespace: nil, context: nil)
+        base_cmd = ["kubectl"]
+        base_cmd << "--namespace=#{namespace}" unless namespace.blank?
+        base_cmd << "--context=#{context}" unless context.blank?
+        base_cmd << "get pod #{name}"
+        base_cmd << "--output=json"
+
+        cmd = ShellCommandExecution.new(base_cmd)
+        ris = cmd.execute(allow_failure: true)
+        if ris.failed?
+          puts "Problemi nella ricerca del pod"
+          exit
+        else
+            self.new(ris.result, context: context)
         end
       end
 
