@@ -2,14 +2,29 @@ module SwarmClusterCliOpe
   module Kubernetes
     class Configuration < BaseConfiguration
 
+      def shell
+        @_shell = Thor::Shell::Basic.new
+      end
+
+      delegate :yes?,to: :shell
 
       ##
       # In kubernetes abbiamo il context, il context può essere ricevuto o dalla configurazione oppure dal current_context
       # di kubelet
       # @return [String]
       def context
-        cmd = ShellCommandExecution.new(['kubectl config current-context'])
-        cmd.execute.raw_result[:stdout]
+
+        context = merged_configurations.dig(:connections_maps,:context) || nil
+
+        if context.nil?
+          cmd = ShellCommandExecution.new(['kubectl config current-context'])
+          context = cmd.execute.raw_result[:stdout]
+          unless yes? "Attenzione, non era presente il contesto nelle configurazioni, usiamo quello attualmente in uso: #{context}, proseguiamo lo stesso?[y,yes]"
+            exit
+          end
+
+        end
+        context
       end
 
       ##

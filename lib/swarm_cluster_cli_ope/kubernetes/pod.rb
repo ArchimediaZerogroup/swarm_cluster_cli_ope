@@ -99,7 +99,8 @@ module SwarmClusterCliOpe
           exit
         else
           if ris.single_obj[:items].empty?
-            logger.warn { "non abbiamo trovato il pod" }
+            puts  "non abbiamo trovato il pod"
+            exit
           else
             self.new(ris.single_obj[:items].first, context: context)
           end

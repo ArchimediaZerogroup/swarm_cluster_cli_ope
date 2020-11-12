@@ -60,49 +60,57 @@ module SwarmClusterCliOpe
                 puts "problema nella copia dei file di configurazione nel pod"
               else
 
-
-                cmd = container.exec('bash -c "rsync --daemon --config=/tmp/rsyncd.conf  --verbose --log-file=/tmp/rsync.log"')
-                if cmd.execute.failed?
-                  say "Rsync non Inizializzato"
-                else
-                  local_port = rand(30000..40000)
-
-                  p = IO.popen(container.base_cmd("port-forward #{podname} #{local_port}:873").string_command)
-                  pid = p.pid
-                  say "PID in execuzione port forward:#{pid}"
-
-                  sleep 1
-
-                  # lanciamo il comando quindi per far rsync
-                  rsync_command = [
-                    "rsync -az --no-o --no-g",
-                    "--delete",
-                    "--password-file=#{ File.expand_path("../../rsync_cfgs/password", __FILE__)}"
-                  ]
-
-                  if direction == :up
-                    rsync_command << "#{local_folder}/."
-                    rsync_command << "rsync://root@0.0.0.0:#{local_port}/archives#{remote_folder}"
+                begin
+                  cmd = container.exec('bash -c "rsync --daemon --config=/tmp/rsyncd.conf  --verbose --log-file=/tmp/rsync.log"')
+                  if cmd.execute.failed?
+                    say "Rsync non Inizializzato"
                   else
-                    rsync_command << "rsync://root@0.0.0.0:#{local_port}/archives#{remote_folder}/."
-                    rsync_command << local_folder
+                    begin
+                      local_port = rand(30000..40000)
+
+                      p = IO.popen(container.base_cmd("port-forward #{podname} #{local_port}:873").string_command)
+                      pid = p.pid
+                      say "PID in execuzione port forward:#{pid}"
+
+                      begin
+
+                        sleep 1
+
+                        # lanciamo il comando quindi per far rsync
+                        rsync_command = [
+                          "rsync -az --no-o --no-g",
+                          "--delete",
+                          "--password-file=#{ File.expand_path("../../rsync_cfgs/password", __FILE__)}"
+                        ]
+
+                        if direction == :up
+                          rsync_command << "#{local_folder}/."
+                          rsync_command << "rsync://root@0.0.0.0:#{local_port}/archives#{remote_folder}"
+                        else
+                          rsync_command << "rsync://root@0.0.0.0:#{local_port}/archives#{remote_folder}/."
+                          rsync_command << local_folder
+                        end
+                        say "Eseguo rsync #{rsync_command.join(" ")}"
+
+                        cmd = ShellCommandExecution.new(rsync_command)
+                        cmd.execute
+
+                      ensure
+                        sleep 1
+                        say "Stoppo porta forwarded"
+                        Process.kill("INT", pid)
+                      end
+                    ensure
+                      say "Tolgo il servizio di rsyn"
+                      cmd = container.exec('bash -c "killall rsync"')
+                      cmd.execute
+                    end
                   end
-                  say "Eseguo rsync #{rsync_command.join(" ")}"
 
-
-                  cmd = ShellCommandExecution.new(rsync_command)
-                  cmd.execute
-
-                  sleep 1
-                  Process.kill("INT", pid)
-
-
-                  say "Eseguo pulizia"
-                  cmd = container.exec('bash -c "killall rsync"')
-                  cmd.execute
+                ensure
+                  say "Eseguo pulizia configurazioni caricate"
                   cmd = container.exec('bash -c "rm -fr /tmp/rsyncd*"')
                   cmd.execute
-
                 end
 
               end
