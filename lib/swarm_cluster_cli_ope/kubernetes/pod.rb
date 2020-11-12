@@ -98,10 +98,10 @@ module SwarmClusterCliOpe
           puts "Problemi nella ricerca del pod"
           exit
         else
-          if ris.result[:items].empty?
+          if ris.single_obj[:items].empty?
             logger.warn { "non abbiamo trovato il pod" }
           else
-            self.new(ris.result[:items].first, context: context)
+            self.new(ris.single_obj[:items].first, context: context)
           end
         end
       end
@@ -119,7 +119,7 @@ module SwarmClusterCliOpe
           puts "Problemi nella ricerca del pod"
           exit
         else
-          self.new(ris.result, context: context)
+          self.new(ris.single_obj, context: context)
         end
       end
 
