@@ -82,21 +82,30 @@ module SwarmClusterCliOpe
       return [] if cfgs.nil? or !cfgs.is_a?(Array)
       cfgs.collect do |c|
 
-        case c[:how]
-        when 'sqlite3'
-          SyncConfigs::Sqlite3.new(self, c)
-        when 'rsync'
-          SyncConfigs::Rsync.new(self, c)
-        when 'mysql'
-          SyncConfigs::Mysql.new(self, c)
-        when 'pg'
-          SyncConfigs::PostGres.new(self, c)
-        else
-          logger.error { "CONFIGURAIONE NON PREVISTA: #{c[:how]}" }
-          nil
+        if self.get_syncro(c[:how])
+          self.get_syncro(c[:how]).new(self, c)
         end
 
       end.compact
+    end
+
+    ##
+    # Funzione per la restituzione della classe di sincro corretta
+    # @return [Class<SwarmClusterCliOpe::SyncConfigs::PostGres>, Class<SwarmClusterCliOpe::SyncConfigs::Mysql>, Class<SwarmClusterCliOpe::SyncConfigs::Rsync>, Class<SwarmClusterCliOpe::SyncConfigs::Sqlite3>, nil]
+    def get_syncro(name)
+      case name
+      when 'sqlite3'
+        SyncConfigs::Sqlite3
+      when 'rsync'
+        SyncConfigs::Rsync
+      when 'mysql'
+        SyncConfigs::Mysql
+      when 'pg'
+        SyncConfigs::PostGres
+      else
+        logger.error { "CONFIGURAIONE NON PREVISTA: #{name}" }
+        nil
+      end
     end
 
     ## Cerca le configurazioni di progetto e le mergia se sono presenti
