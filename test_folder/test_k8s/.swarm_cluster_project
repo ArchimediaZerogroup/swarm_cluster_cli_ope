@@ -6,6 +6,15 @@
   "log_level": "3",
   "sync_configs": [
     {
+      "service": "app=postgresql",
+      "how": "pg",
+      "configs": {
+        "local": {
+          "service": "pg_locale"
+        }
+      }
+    },
+    {
       "service": "app=ubuntu",
       "how": "rsync",
       "configs": {

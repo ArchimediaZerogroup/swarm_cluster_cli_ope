@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_ROOT_PASSWORD: root
+
+  pg_locale:
+    image: postgres:12
+    environment:
+      POSTGRES_PASSWORD: example_pwd_dev
+      POSTGRES_DB: mio_db_dev
+      POSTGRES_USER: utente_dev
+
+
+  second:
+    image: wordpress
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./cartella_bindata:/test_bind
+
+  test_sqlite3:
+    image: ubuntu
+    command: '/bin/bash -c "touch /cartella_sqlite3/esempio.sqlite3 && trap : TERM INT; sleep infinity & wait"'
+    volumes:
+      - sqlite:/cartella_sqlite3
+
+volumes:
+  sqlite:
+
