@@ -137,6 +137,8 @@ module SwarmClusterCliOpe
         exit
       end
 
+      evaluate_correct_command_usage(@_merged_configurations[@environment])
+
       @_merged_configurations[@environment]
 
     end
@@ -171,8 +173,13 @@ module SwarmClusterCliOpe
     end
 
 
-
     private
+
+    ##
+    # Funzione che serve per identificare se siamo nella corretta classe di configurazione e di conseguenza nel corretto
+    # set di comandi di configurazione. Serve per non eseguire k8s con le vecchie impostazioni o viceversa
+    def evaluate_correct_command_usage(configuration) end
+
     ##
     # nome del file in cui salvare le configurazioni di progetto
     # @return [String]

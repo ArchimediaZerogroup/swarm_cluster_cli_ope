@@ -58,6 +58,17 @@ module SwarmClusterCliOpe
         end
       end
 
+      private
+
+      def evaluate_correct_command_usage(configuration)
+
+        unless configuration[:connections_maps].keys.include?(:context)
+          puts "ATTENZIONE, I COMANDI NON DEVONO ESSERE LANCIATI DAL SUB COMANDO K8S"
+          exit
+        end
+
+      end
+
 
     end
   end

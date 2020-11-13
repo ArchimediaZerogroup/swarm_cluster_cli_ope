@@ -90,6 +90,17 @@ module SwarmClusterCliOpe
 
     private
 
+
+    def evaluate_correct_command_usage(configuration)
+
+      if configuration[:connections_maps].keys.include?(:context)
+        puts "ATTENZIONE, I COMANDI DEVONO ESSERE LANCIATI DAL SUB COMANDO K8S"
+        exit
+      end
+
+    end
+
+
     ##
     # Path al file dove salviamo la cache dei managers, ha un TTL legato all'orario (anno-mese-giorno-ora)
     # quindi ogni ora si autoripulisce e con un md5 delle configurazioni di base

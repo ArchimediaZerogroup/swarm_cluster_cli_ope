@@ -102,6 +102,13 @@ module SwarmClusterCliOpe
                     else
                       raise "ONLY [push|pull] action accepted"
                     end
+
+        if direction == :push
+          unless yes? "ATTENZIONE STAI FACENDO PUSH, proseguire????[y,yes]"
+            exit "OK, CIAO"
+          end
+        end
+
         cfgs.env(options[:environment]) do |cfgs|
           sync_cfgs = cfgs.sync_configurations
           if sync_cfgs.empty?
