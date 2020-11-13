@@ -1,8 +1,16 @@
+require 'active_support/concern'
+
 module SwarmClusterCliOpe
   module ConfigurationConcern
+    extend ActiveSupport::Concern
 
-    def self.included(klass)
-      klass.extend(ClassMethods)
+    included do
+
+      # @return [SwarmClusterCliOpe::Configuration]
+      def cfgs
+        SwarmClusterCliOpe.current_configuration ||= self.class.cfgs
+      end
+
     end
 
     module ClassMethods
@@ -13,12 +21,5 @@ module SwarmClusterCliOpe
         Configuration.instance
       end
     end
-
-
-    # @return [SwarmClusterCliOpe::Configuration]
-    def cfgs
-      self.class.cfgs
-    end
-
   end
 end

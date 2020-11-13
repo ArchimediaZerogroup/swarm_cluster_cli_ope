@@ -1,0 +1,51 @@
+{
+  "stack_name": "test-rsync",
+  "connections_maps": {
+    "context": "minikube"
+  },
+  "log_level": "3",
+  "sync_configs": [
+    {
+      "service": "app=mysql",
+      "how": "mysql",
+      "configs": {
+        "local": {
+          "service": "db",
+          "mysql_password": "root",
+          "mysql_user": "root",
+          "database_name_env": "MYSQL_DATABASE"
+        },
+        "remote": {
+          "mysql_password_env": "MYSQL_PASSWORD",
+          "mysql_user_env": "MYSQL_USER",
+          "database_name_env": "MYSQL_DATABASE"
+        }
+      }
+    },
+    {
+      "service": "app=postgresql",
+      "how": "pg",
+      "configs": {
+        "local": {
+          "service": "pg_locale"
+        }
+      }
+    },
+    {
+      "service": "app=ubuntu",
+      "how": "rsync",
+      "configs": {
+        "remote": "/test_shared",
+        "local": "./rsync_folder"
+      }
+    },
+    {
+      "service": "app=sqlite3",
+      "how": "sqlite3",
+      "configs": {
+        "remote": "/test_sqlite3/esempio.sqlite3",
+        "local": "./esempio.sqlite3"
+      }
+    }
+  ]
+}

@@ -38,7 +38,7 @@ module SwarmClusterCliOpe
         pid: nil,
         status: nil
       }
-      logger.debug { "SHELL: #{string_command}" }
+      logger.info { "SHELL: #{string_command}" }
       result[:status] = Open4::popen4(string_command) do |pid, stdin, stdout, stderr|
         stdin.close
 

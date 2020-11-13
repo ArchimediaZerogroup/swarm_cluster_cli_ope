@@ -1,8 +1,8 @@
 require 'forwardable'
 
 module SwarmClusterCliOpe
-##
-# Identifica una risposta dalla shell
+  ##
+  # Identifica una risposta dalla shell
   class ShellCommandResponse
     extend Forwardable
     include LoggerConcern
@@ -28,9 +28,22 @@ module SwarmClusterCliOpe
     ##
     # Risultato, essendo sempre composto da una lista di righe in formato json, ritorniamo un array di json
     # @param [Object] object_class
-    # @return [Array<object_class>]
-    def result(object_class: OpenStruct)
-      raw_result[:stdout].split("\n").collect { |s| object_class.new(JSON.parse(s)) }
+    # @return [Array<object_class>,Object]
+    def result(object_class: OpenStruct, single: false)
+      #tento prima di estrapolare direttamente da json e sucessivamente come array
+      if single
+        # questo per k8s, dato che abbiamo come risposta un json vero
+        object_class.new(JSON.parse(raw_result[:stdout]))
+      else
+        # questo nel caso siamo in swarm che ci ritorna un array di json
+        raw_result[:stdout].split("\n").collect { |s| object_class.new(JSON.parse(s)) }
+      end
+    end
+
+    # @param [Class<OpenStruct>] object_class
+    # @return [Object]
+    def single_obj(object_class: OpenStruct)
+      result(object_class: object_class, single: true)
     end
 
     #

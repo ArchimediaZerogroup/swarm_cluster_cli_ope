@@ -110,7 +110,7 @@ ogni configurazione è composta da:
       }
 ```
 
-- service è il nome del servizio
+- service è il nome del servizio (o nel caso  di k8s una stringa da utilizzare come selettore labels)
 - how è il come sincronizzare, definendo la tipologia:
   - pg      -> DB TODO
   - mysql   -> DB: dump del db con mysqldump
@@ -193,7 +193,7 @@ Esempio di sincronizzazione di un file sqlite3 e una cartella
 
 nel file di configurazione creato nella home aggiungere la chiave "dev_mode":1 per collegarsi localmente
 
-### Abbiamo due tasks swarm di simulazione
+### Abbiamo due tasks SWARM di simulazione
 ```shell script
 docker stack deploy -c test_folder/test_1/docker-compose.yml test_1_stack
 docker stack deploy -c test_folder/test_1/docker-compose.yml test1_staging
@@ -206,6 +206,15 @@ da trovarci sulla stessa macchina con tutte e due le situazioni
 docker-compose -f test_folder/test_1/docker-compose-local.yml up -d
 ```
 
+
+### K8s
+Per Kubernetes dobbiamo avere minikube installato.
+lanciare quindi l'ambiente di test:
+
+```shell script
+kubectl apply -f test_folder/test_k8s/test.yaml
+docker-compose -f test_folder/test_k8s/docker-compose-local.yml up -d
+```
 
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version 

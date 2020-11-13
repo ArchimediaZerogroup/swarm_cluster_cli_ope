@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-rsync
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-pvc-request
+  namespace: test-rsync
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-container
+  namespace: test-rsync
+  labels:
+    app: ubuntu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      containers:
+        - name: ubuntu
+          image: ubuntu
+          command:
+            - bin/bash
+          args:
+            - -c
+            - sleep 1000
+          volumeMounts:
+            - mountPath: /test_shared
+              name: shared
+      volumes:
+        - name: shared
+          persistentVolumeClaim:
+            claimName: test-pvc-request
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-container-sqlite3
+  namespace: test-rsync
+  labels:
+    app: sqlite3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlite3
+  template:
+    metadata:
+      labels:
+        app: sqlite3
+    spec:
+      containers:
+        - name: sqlite3
+          image: ubuntu
+          command:
+            - bin/bash
+          args:
+            - -c
+            - "touch /test_sqlite3/esempio.sqlite3 && trap : TERM INT; sleep infinity & wait"
+          volumeMounts:
+            - mountPath: /test_sqlite3
+              name: shared
+      volumes:
+        - name: shared
+          persistentVolumeClaim:
+            claimName: test-pvc-request-sqlite3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-pvc-request-sqlite3
+  namespace: test-rsync
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-container-postgresql
+  namespace: test-rsync
+  labels:
+    app: postgresql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql
+  template:
+    metadata:
+      labels:
+        app: postgresql
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:12
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "example"
+            - name: POSTGRES_DB
+              value: "mio_db"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-container-mysql
+  namespace: test-rsync
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql
+          env:
+            - name: MYSQL_DATABASE
+              value: "wordpress"
+            - name: MYSQL_USER
+              value: "pippo"
+            - name: MYSQL_PASSWORD
+              value: "examplepass"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+

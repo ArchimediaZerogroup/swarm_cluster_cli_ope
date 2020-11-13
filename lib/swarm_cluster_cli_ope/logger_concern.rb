@@ -6,7 +6,7 @@ module SwarmClusterCliOpe
       return LoggerConcern.const_get("LOGGER") if LoggerConcern.const_defined?("LOGGER")
       logger = Logger.new(STDOUT)
       LoggerConcern.const_set("LOGGER", logger)
-      logger.level = case Configuration.instance.logger_level
+      logger.level = case BaseConfiguration.instance.logger_level
                      when "0"
                        Logger::ERROR
                      when "1"

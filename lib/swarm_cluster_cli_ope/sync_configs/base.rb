@@ -9,7 +9,7 @@ module SwarmClusterCliOpe
       attr_accessor :configs
 
       # @param [Hash] configs
-      # @param [Continuation] stack_cfgs
+      # @param [Configuration] stack_cfgs
       def initialize(stack_cfgs, configs)
         super()
         @configs = configs

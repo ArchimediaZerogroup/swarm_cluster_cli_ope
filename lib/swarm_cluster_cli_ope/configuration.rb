@@ -8,17 +8,8 @@ module SwarmClusterCliOpe
   # Classe per la gestione delle configurazioni, unisce le configurazioni di base alle configurazioni di progetto;
   # le quali sono salvate nel file di configurazione del progetto .swarm_cluster_project sottoforma di json
   # che vengono mergiate sulle configurazioni base
-  class Configuration
-    include Singleton
-    include LoggerConcern
+  class Configuration < BaseConfiguration
 
-    #@return [String] nome dello stack con cui lavoriamo
-    attr_accessor :stack_name
-
-    #@return [String] in che enviroment siamo, altrimenti siamo nel default
-    attr_accessor :environment
-
-    NoBaseConfigurations = Class.new(Error)
 
     ##
     # Lista di nodi su cui lavorare
@@ -26,19 +17,6 @@ module SwarmClusterCliOpe
     def managers
       return @_managers if @_managers
       @_managers = self.nodes.select { |n| read_managers_cache_list.include?(n.name) }.collect { |c| Manager.new(name: c.name.to_s, connection_uri: c.connection_uri) }
-    end
-
-    ##
-    # Serve per entrare nell'env corretto.
-    # passando l'env, tutto quello eseguito nello yield sarà gestito in quell'env.
-    # Verrà controllato quindi che esista il relativo file di configurazion
-    def env(enviroment = nil)
-      unless enviroment.nil?
-        @environment = enviroment.to_s.to_sym
-      end
-      logger.info { "ENV: #{@environment ? @environment : "BASE"}" }
-      yield self
-      @environment = nil
     end
 
     ##
@@ -80,77 +58,14 @@ module SwarmClusterCliOpe
       self
     end
 
-    # @return [String,NilClass] nome dello stack del progetto se configurato
-    def stack_name
-      return nil unless self.class.exist_base?
-      @stack_name ||= Hash.new do |hash, key|
-        hash[key] = merged_configurations[:stack_name] if merged_configurations.key?(:stack_name)
-      end
-      @stack_name[environment]
-    end
-
-    ##
-    # Imposta il nome dello stack
-    def stack_name=(objs)
-      stack_name #lo richiamo per fargli generare la variabile di classe
-      @stack_name[environment] = objs
-    end
-
-    ##
-    # Livello di logging
-    # @return [Integer]
-    def logger_level
-      merged_configurations[:log_level].to_s || "0"
-    rescue SwarmClusterCliOpe::Configuration::NoBaseConfigurations
-      # quando andiamo in errore durante l'installazione per avere le informazioni per il logger.
-      # Usiamo lo standard
-      "0"
-    end
-
-    ##
-    # Siamo in sviluppo?
-    # @return [TrueClass, FalseClass]
-    def development_mode?
-      return false unless self.class.exist_base?
-      merged_configurations.key?(:dev_mode)
-    end
-
-    ##
-    # Controlla se esiste il file di configurazione base, nella home dell'utente
-    def self.exist_base?
-      File.exist?(base_cfg_path)
-    end
-
-
     ##
     # Salva le configurazioni base in HOME
     def save_base_cfgs
-      FileUtils.mkdir_p(File.dirname(self.class.base_cfg_path))
-      File.open(self.class.base_cfg_path, "wb") do |f|
-        f.write({
-                  version: SwarmClusterCliOpe::VERSION,
-                  connections_maps: nodes.collect { |k| [k.name, k.connection_uri] }.to_h
-                }.to_json)
+      super do |obj|
+        obj.merge({connections_maps: nodes.collect { |k| [k.name, k.connection_uri] }.to_h})
       end
     end
 
-    ##
-    # Si occupa del salvataggio delle configurazioni di progetto, se abbiamo lo stack_name
-    def save_project_cfgs
-      if stack_name
-        File.open(File.join(FileUtils.pwd, self.class.cfgs_project_file_name(with_env: @environment)), "wb") do |f|
-          f.write({
-                    stack_name: stack_name,
-                    version: VERSION
-                  }.to_json)
-        end
-      end
-    end
-
-    # @return [String] path to base home configurations
-    def self.base_cfg_path
-      File.join(ENV['HOME'], '.swarm_cluster', 'config.json')
-    end
 
     # @return [SwarmClusterCliOpe::Node]
     # @param [String] node nome del nodo
@@ -164,49 +79,19 @@ module SwarmClusterCliOpe
       nodes.find { |c| c.id == node_id }
     end
 
-    ##
-    # Indica il nome del progetto locale compose, quella parte di nome che viene attaccata in fronte
-    # ad ogni nome di servizio locale, e che come default è il nome della cartella in cui risiede
-    # il docker-compose.yml file
-    # @return [String]
-    def local_compose_project_name
-      File.basename(FileUtils.pwd).downcase
-    end
-
-    ##
-    # Elenco di tutte le configurazioni di sincronizzazione
-    # @return [Array]
-    def sync_configurations
-      cfgs = merged_configurations[:sync_configs]
-      return [] if cfgs.nil? or !cfgs.is_a?(Array)
-      cfgs.collect do |c|
-
-        case c[:how]
-        when 'sqlite3'
-          SyncConfigs::Sqlite3.new(self, c)
-        when 'rsync'
-          SyncConfigs::Rsync.new(self, c)
-        when 'mysql'
-          SyncConfigs::Mysql.new(self, c)
-        when 'pg'
-          SyncConfigs::PostGres.new(self, c)
-        else
-          logger.error { "CONFIGURAIONE NON PREVISTA: #{c[:how]}" }
-          nil
-        end
-
-      end.compact
-    end
 
     private
 
-    ##
-    # nome del file in cui salvare le configurazioni di progetto
-    # @return [String]
-    # @param [nil|String] with_env nome dell'env da cercare
-    def self.cfgs_project_file_name(with_env: nil)
-      ".swarm_cluster_project#{with_env ? ".#{with_env}" : ""}"
+
+    def evaluate_correct_command_usage(configuration)
+
+      if configuration[:connections_maps].keys.include?(:context)
+        puts "ATTENZIONE, I COMANDI DEVONO ESSERE LANCIATI DAL SUB COMANDO K8S"
+        exit
+      end
+
     end
+
 
     ##
     # Path al file dove salviamo la cache dei managers, ha un TTL legato all'orario (anno-mese-giorno-ora)
@@ -218,67 +103,6 @@ module SwarmClusterCliOpe
       File.join("/tmp", file_name)
     end
 
-    ##
-    # Legge le configurazioni base
-    #
-    # @return [Hash]
-    def self.read_base
-      raise NoBaseConfigurations unless exist_base?
-      JSON.parse(File.read(self.base_cfg_path)).deep_symbolize_keys
-    end
-
-    public
-
-    ## Cerca le configurazioni di progetto e le mergia se sono presenti
-    # @return [Hash]
-    def merged_configurations
-      return @_merged_configurations[@environment] if @_merged_configurations
-
-      @_merged_configurations = Hash.new do |hash, key|
-        folder = FileUtils.pwd
-        default_file = looped_file(folder, self.class.cfgs_project_file_name)
-        enviroment_file = looped_file(folder, self.class.cfgs_project_file_name(with_env: key))
-
-        project_cfgs = {}
-        unless default_file.nil?
-          project_cfgs = JSON.parse(File.read(default_file)).deep_symbolize_keys
-        end
-
-        unless enviroment_file.nil?
-          project_cfgs.merge!(JSON.parse(File.read(enviroment_file)).deep_symbolize_keys)
-        end
-
-        hash[key] = self.class.read_base.merge(project_cfgs)
-      end
-
-      configuration_version = @_merged_configurations[@environment][:version]
-      if Gem::Version.new(configuration_version) > Gem::Version.new(VERSION)
-        puts "WARNING: Versione del file di configurazione [#{configuration_version}] più aggiornata della gemma [#{VERSION}], eseguire upgrade
-              gem update swarm_cluster_cli_ope"
-        exit
-      end
-
-      @_merged_configurations[@environment]
-
-    end
-
-    private
-
-    def looped_file(start_folder, file)
-      project_file = nil
-      loop do
-
-        if File.exist?(File.join(start_folder, file))
-          project_file = File.join(start_folder, file)
-        end
-
-        break unless project_file.nil?
-        break if start_folder == '/'
-        start_folder = File.expand_path("..", start_folder)
-      end
-
-      project_file
-    end
 
   end
 end
