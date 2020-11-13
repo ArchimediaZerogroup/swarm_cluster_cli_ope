@@ -172,6 +172,14 @@ module SwarmClusterCliOpe
       end
     end
 
+    ##
+    # Indica il nome del progetto locale compose, quella parte di nome che viene attaccata in fronte
+    # ad ogni nome di servizio locale, e che come default è il nome della cartella in cui risiede
+    # il docker-compose.yml file
+    # @return [String]
+    def local_compose_project_name
+      File.basename(FileUtils.pwd).downcase
+    end
 
     private
 

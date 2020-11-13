@@ -8,7 +8,7 @@ module SwarmClusterCliOpe
 
       # @return [SwarmClusterCliOpe::Configuration]
       def cfgs
-        self.class.cfgs
+        SwarmClusterCliOpe.current_configuration ||= self.class.cfgs
       end
 
     end
