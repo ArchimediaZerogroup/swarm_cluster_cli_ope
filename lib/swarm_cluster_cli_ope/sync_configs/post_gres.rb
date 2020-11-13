@@ -129,7 +129,7 @@ module SwarmClusterCliOpe
       # @param [EnvConfigs] config
       def close_connections_and_drop_cmd(config)
         cmd = []
-        cmd << "PGPASSWORD=\"#{config.password}\""
+        cmd << "export PGPASSWORD=\"#{config.password}\" &&"
 
         sql = []
         sql << "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname =  '\"'\"'#{config.database_name}'\"'\"' AND pid <> pg_backend_pid();;"
