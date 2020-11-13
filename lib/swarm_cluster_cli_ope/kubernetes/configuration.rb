@@ -50,8 +50,8 @@ module SwarmClusterCliOpe
           SyncConfigs::Rsync
         # when 'mysql'
         #   SyncConfigs::Mysql
-        # when 'pg'
-        #   SyncConfigs::PostGres
+        when 'pg'
+          SyncConfigs::PostGres
         else
           logger.error { "CONFIGURAIONE NON PREVISTA: #{name}" }
           nil
