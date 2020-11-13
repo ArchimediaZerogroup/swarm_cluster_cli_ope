@@ -47,7 +47,7 @@ module SwarmClusterCliOpe
             end
 
             cmd = container.exec(['bash -c "apt update && apt install -yq rsync psmisc"'])
-            if cmd.execute.failed?
+            if cmd.failed?
               puts "Problemi nell'installazione di rsync nel pod"
             else
               cmd = container.cp_in(File.expand_path("../../rsync_cfgs/rsyncd.conf", __FILE__), "/tmp/.")
@@ -55,14 +55,14 @@ module SwarmClusterCliOpe
               cmd = container.cp_in(File.expand_path("../../rsync_cfgs/rsyncd.secrets", __FILE__), "/tmp/.")
               copy_2 = cmd.execute.failed?
               cmd = container.exec(['bash -c "chmod 600 /tmp/rsyncd.secrets  && chown root /tmp/*"'])
-              chmod = cmd.execute.failed?
+              chmod = cmd.failed?
               if copy_1 or copy_2 or chmod
                 puts "problema nella copia dei file di configurazione nel pod"
               else
 
                 begin
                   cmd = container.exec('bash -c "rsync --daemon --config=/tmp/rsyncd.conf  --verbose --log-file=/tmp/rsync.log"')
-                  if cmd.execute.failed?
+                  if cmd.failed?
                     say "Rsync non Inizializzato"
                   else
                     begin
@@ -102,15 +102,13 @@ module SwarmClusterCliOpe
                       end
                     ensure
                       say "Tolgo il servizio di rsyn"
-                      cmd = container.exec('bash -c "killall rsync"')
-                      cmd.execute
+                      container.exec('bash -c "killall rsync"')
                     end
                   end
 
                 ensure
                   say "Eseguo pulizia configurazioni caricate"
-                  cmd = container.exec('bash -c "rm -fr /tmp/rsyncd*"')
-                  cmd.execute
+                  container.exec('bash -c "rm -fr /tmp/rsyncd*"')
                 end
 
               end

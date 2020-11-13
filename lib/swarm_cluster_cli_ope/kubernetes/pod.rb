@@ -30,9 +30,9 @@ module SwarmClusterCliOpe
       end
 
       # @param [String,Array<String>] cmd -> comando da passare a kubectl exec -- CMD
-      # @return [SwarmClusterCliOpe::ShellCommandExecution]
+      # @return [SwarmClusterCliOpe::ShellCommandResponse]
       def exec(cmd)
-        base_cmd(["exec", name, "--", cmd].flatten)
+        base_cmd(["exec", name, "--", cmd].flatten).execute
       end
 
       ##
