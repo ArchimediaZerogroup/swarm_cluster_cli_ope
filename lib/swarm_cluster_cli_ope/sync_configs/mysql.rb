@@ -7,9 +7,24 @@ module SwarmClusterCliOpe
         resume('pull')
         if yes?("Confermare il comando?[y,yes]")
           tmp_file = "/tmp/#{Time.now.to_i}.sql.gz"
-          container.exec("bash -c 'mysqldump  -u #{remote.username} --password=#{remote.password} #{remote.database_name} | gzip -c -f' > #{tmp_file}")
+          container.exec("bash -c 'mysqldump -u #{remote.username} --password=#{remote.password} #{remote.database_name} | gzip -c -f' > #{tmp_file}")
           local_container.copy_in(tmp_file, tmp_file)
-          local_container.exec("bash -c 'zcat #{tmp_file} | mysql  -u #{local.username} --password=#{local.password} #{local.database_name}'")
+          local_authentication = "-u #{local.username} --password=#{local.password}"
+
+          command = []
+          command << "bash -c '"
+
+          command << "mysql #{local_authentication} -e \"DROP DATABASE IF EXISTS #{local.database_name};CREATE DATABASE  #{local.database_name}\""
+
+          command << "&&"
+
+          command << "zcat #{tmp_file}"
+          command << "|"
+          command << "mysql #{local_authentication} #{local.database_name}"
+
+          command << "'"
+
+          local_container.exec(command.join" ")
         end
         true
       end
