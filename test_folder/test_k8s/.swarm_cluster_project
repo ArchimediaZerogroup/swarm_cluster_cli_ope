@@ -6,6 +6,23 @@
   "log_level": "3",
   "sync_configs": [
     {
+      "service": "app=mysql",
+      "how": "mysql",
+      "configs": {
+        "local": {
+          "service": "db",
+          "mysql_password": "root",
+          "mysql_user": "root",
+          "database_name_env": "MYSQL_DATABASE"
+        },
+        "remote": {
+          "mysql_password_env": "MYSQL_PASSWORD",
+          "mysql_user_env": "MYSQL_USER",
+          "database_name_env": "MYSQL_DATABASE"
+        }
+      }
+    },
+    {
       "service": "app=postgresql",
       "how": "pg",
       "configs": {

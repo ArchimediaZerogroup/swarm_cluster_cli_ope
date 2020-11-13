@@ -10,7 +10,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
 
   pg_locale:
-    image: postgres
+    image: postgres:12
     environment:
       POSTGRES_PASSWORD: example_pwd_dev
       POSTGRES_DB: mio_db_dev

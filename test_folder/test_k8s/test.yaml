@@ -118,3 +118,34 @@ spec:
               value: "example"
             - name: POSTGRES_DB
               value: "mio_db"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-container-mysql
+  namespace: test-rsync
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql
+          env:
+            - name: MYSQL_DATABASE
+              value: "wordpress"
+            - name: MYSQL_USER
+              value: "pippo"
+            - name: MYSQL_PASSWORD
+              value: "examplepass"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+
