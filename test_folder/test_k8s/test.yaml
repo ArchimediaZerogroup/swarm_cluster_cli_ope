@@ -122,6 +122,32 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: simple-container-postgresql13
+  namespace: test-rsync
+  labels:
+    app: postgresql13
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql13
+  template:
+    metadata:
+      labels:
+        app: postgresql13
+    spec:
+      containers:
+        - name: postgresql13
+          image: postgres:13.1
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "example"
+            - name: POSTGRES_DB
+              value: "mio_db"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: simple-container-mysql
   namespace: test-rsync
   labels:

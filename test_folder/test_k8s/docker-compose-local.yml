@@ -16,6 +16,13 @@ services:
       POSTGRES_DB: mio_db_dev
       POSTGRES_USER: utente_dev
 
+  pg_locale13:
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: example_pwd_dev
+      POSTGRES_DB: mio_db_dev
+      POSTGRES_USER: utente_dev
+
 
   second:
     image: wordpress

@@ -6,6 +6,15 @@
   "log_level": "3",
   "sync_configs": [
     {
+      "service": "app=postgresql13",
+      "how": "pg",
+      "configs": {
+        "local": {
+          "service": "pg_locale13"
+        }
+      }
+    },
+    {
       "service": "app=mysql",
       "how": "mysql",
       "configs": {
