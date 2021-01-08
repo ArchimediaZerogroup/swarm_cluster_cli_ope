@@ -2,7 +2,6 @@ module SwarmClusterCliOpe
   module SyncConfigs
     class PostGres < BaseDatabase
 
-
       def pull
         resume('pull')
 
@@ -13,11 +12,11 @@ module SwarmClusterCliOpe
           local.container.copy_in(tmp_file, tmp_file)
 
           # drop old db and recreate
-          if Gem::Version.new(local.database_version) <= Gem::Version.new("12")
-            close_connections_and_drop_cmd(local)
-          else
-            raise "DA ANALIZZARE QUANDO LA 13 disponibile....dropdb ha un force come parametro"
-          end
+          # if Gem::Version.new(local.database_version) <= Gem::Version.new("12")
+          close_connections_and_drop_cmd(local)
+          # else
+          #   raise "DA ANALIZZARE QUANDO LA 13 disponibile....dropdb ha un force come parametro"
+          # end
 
           create_cmd(local)
 
@@ -37,12 +36,8 @@ module SwarmClusterCliOpe
           dump_cmd(local, tmp_file)
           remote.container.copy_in(tmp_file, tmp_file)
 
-          # drop old db and recreate
-          if Gem::Version.new(local.database_version) <= Gem::Version.new("12")
-            close_connections_and_drop_cmd(remote)
-          else
-            raise "DA ANALIZZARE QUANDO LA 13 disponibile....dropdb ha un force come parametro"
-          end
+          close_connections_and_drop_cmd(remote)
+
           create_cmd(remote)
 
           restore_cmd(remote, tmp_file)
@@ -125,23 +120,31 @@ module SwarmClusterCliOpe
 
       end
 
-
       # @param [EnvConfigs] config
       def close_connections_and_drop_cmd(config)
+
         cmd = []
-        cmd << "export PGPASSWORD=\"#{config.password}\" &&"
 
-        sql = []
-        sql << "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname =  '\"'\"'#{config.database_name}'\"'\"' AND pid <> pg_backend_pid();;"
-        sql << "DROP DATABASE IF EXISTS #{config.database_name};"
+        if Gem::Version.new(config.database_version) >= Gem::Version.new("13")
+          cmd << "export PGPASSWORD=\"#{config.password}\" &&"
+          cmd << 'dropdb --force --if-exists'
+          cmd << "-U #{config.username}"
+          cmd << config.database_name
 
-        cmd << "echo \"#{sql.join(" ")}\" "
-        cmd << '|'
-        cmd << 'psql'
-        cmd << "-U #{config.username}"
-        cmd << "postgres"
-        cmd
+        else
+          cmd << "export PGPASSWORD=\"#{config.password}\" &&"
 
+          sql = []
+          sql << "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname =  '\"'\"'#{config.database_name}'\"'\"' AND pid <> pg_backend_pid();;"
+          sql << "DROP DATABASE IF EXISTS #{config.database_name};"
+
+          cmd << "echo \"#{sql.join(" ")}\" "
+          cmd << '|'
+          cmd << 'psql'
+          cmd << "-U #{config.username}"
+          cmd << "postgres"
+
+        end
         logger.info { "CLOSE CONNECTIONS COMMAND: #{cmd.join(' ')}" }
         config.container.exec("bash -c '#{cmd.join(' ')}'")
       end
@@ -152,7 +155,6 @@ module SwarmClusterCliOpe
       # PGPASSWORD='root' dropdb  -U root  -h 0.0.0.0  -p 32790  development;
       # PGPASSWORD='root' createdb  -U root  -h 0.0.0.0  -p 32790  development;
       # PGPASSWORD='root' psql  -U root  -h 0.0.0.0  -p 32790  -d development < ./cortobio_production_new_2020-09-10-171742.sql
-
 
     end
   end
