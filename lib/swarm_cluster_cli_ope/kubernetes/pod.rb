@@ -90,6 +90,7 @@ module SwarmClusterCliOpe
         base_cmd << "--context=#{context}" unless context.blank?
         base_cmd << "get pod"
         base_cmd << "--selector=#{selector}"
+        base_cmd << "--field-selector=status.phase=Running" #solo pod che stanno girando teniamo sotto controllo
         base_cmd << "--output=json"
 
         cmd = ShellCommandExecution.new(base_cmd)
