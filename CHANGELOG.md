@@ -1,5 +1,8 @@
 ## Changelog
 
+# 0.5.4
+- bug permessi sul file password dell'rsync
+
 # 0.5.3
 - bug selezione pod, ora filtra solamente per i containers che sono attivi 
 
