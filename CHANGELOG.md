@@ -1,5 +1,8 @@
 ## Changelog
 
+# 0.5.3
+- bug selezione pod, ora filtra solamente per i containers che sono attivi 
+
 # 0.4
 - implementazione push pull con il comando **stacksync** di pg
 - controllo di versione sul file caricato rispeto a gemma, con conseguente warning 
