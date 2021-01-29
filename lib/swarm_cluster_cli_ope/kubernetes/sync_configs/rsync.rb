@@ -76,6 +76,10 @@ module SwarmClusterCliOpe
 
                         sleep 1
 
+                        # forzo i permessi sul file della password
+                        cmd = ShellCommandExecution.new(["chmod 600 #{ configs_path("password")}"])
+                        cmd.execute
+
                         # lanciamo il comando quindi per far rsync
                         rsync_command = [
                           "rsync -az --no-o --no-g",
