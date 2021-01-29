@@ -50,9 +50,9 @@ module SwarmClusterCliOpe
             if cmd.failed?
               puts "Problemi nell'installazione di rsync nel pod"
             else
-              cmd = container.cp_in(File.expand_path("../../rsync_cfgs/rsyncd.conf", __FILE__), "/tmp/.")
+              cmd = container.cp_in(configs_path("rsyncd.conf"), "/tmp/.")
               copy_1 = cmd.execute.failed?
-              cmd = container.cp_in(File.expand_path("../../rsync_cfgs/rsyncd.secrets", __FILE__), "/tmp/.")
+              cmd = container.cp_in(configs_path("rsyncd.secrets"), "/tmp/.")
               copy_2 = cmd.execute.failed?
               cmd = container.exec(['bash -c "chmod 600 /tmp/rsyncd.secrets  && chown root /tmp/*"'])
               chmod = cmd.failed?
@@ -80,7 +80,7 @@ module SwarmClusterCliOpe
                         rsync_command = [
                           "rsync -az --no-o --no-g",
                           "--delete",
-                          "--password-file=#{ File.expand_path("../../rsync_cfgs/password", __FILE__)}"
+                          "--password-file=#{ configs_path("password")}"
                         ]
 
                         if direction == :up
@@ -117,6 +117,14 @@ module SwarmClusterCliOpe
 
           end
 
+        end
+
+        ##
+        # Estrapola la path al file di configurazione
+        # @param [String] file
+        # @return [String]
+        def configs_path(file)
+          File.expand_path("../../rsync_cfgs/#{file}", __FILE__)
         end
 
       end
