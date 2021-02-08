@@ -15,7 +15,6 @@ module SwarmClusterCliOpe
           @configs[:configs][:remote]
         end
 
-
         # @return [SwarmClusterCliOpe::ShellCommandResponse]
         def push
           execute(direction: :up)
@@ -26,7 +25,6 @@ module SwarmClusterCliOpe
           execute(direction: :down)
         end
 
-
         private
 
         def execute(direction: :down)
@@ -35,7 +33,6 @@ module SwarmClusterCliOpe
             say "Container non trovato"
             exit
           end
-
 
           if yes? "Attenzione, i dati locali o remoti verranno sovrascritti/cancellati?[y,yes]"
 
@@ -46,10 +43,27 @@ module SwarmClusterCliOpe
               exit
             end
 
-            cmd = container.exec(['bash -c "apt update && apt install -yq rsync psmisc"'])
-            if cmd.failed?
-              puts "Problemi nell'installazione di rsync nel pod"
-            else
+            # controllo presenza comandi necessari
+            command_installed = false
+            cmd_ricerca = container.exec(['bash -c "command -v rsync && command -v killall"'])
+            unless cmd_ricerca.failed?
+              num_commands = cmd_ricerca.raw_result[:stdout].split("\n").count rescue 0
+              if num_commands == 2
+                command_installed = true
+              end
+            end
+
+            unless command_installed
+              # tentiamo di installarlo
+              cmd = container.exec(['bash -c "apt update && apt install -yq rsync psmisc"'])
+              if cmd.failed?
+                puts "Problemi nell'installazione di rsync nel pod"
+              else
+                command_installed = true
+              end
+            end
+
+            if command_installed
               cmd = container.cp_in(configs_path("rsyncd.conf"), "/tmp/.")
               copy_1 = cmd.execute.failed?
               cmd = container.cp_in(configs_path("rsyncd.secrets"), "/tmp/.")
