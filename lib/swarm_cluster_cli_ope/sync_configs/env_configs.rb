@@ -17,6 +17,7 @@ module SwarmClusterCliOpe
       ##
       # Metodo che richiama la lambda della generazione del container al momento che ne
       # è proprio necessario
+      # @return [SwarmClusterCliOpe::Commands::Container,SwarmClusterCliOpe::Kubernetes::Pod]
       def container
         @container ||= @lambda_container.call
       end
@@ -26,7 +27,6 @@ module SwarmClusterCliOpe
         @configs[:service] || @sync_configs.service
       end
 
-
       ##
       # Costruisce i metodi che restituiscono i valori delle configurazioni
       #
@@ -35,8 +35,9 @@ module SwarmClusterCliOpe
       # @param [String,Symbol] configuration_name -> nome della configurazione da utilizzare per estrapolare la configurazione
       #                                           in automatico viene tenuto conto se cercare per la versione
       #                                           con _env o senza....precedenza SENZA
+      # @param [Block] from_proc -> proc da utilizzare per ricavare il valore
       # @param [nil,String] default_value se non è estrapolato nessun valore, viene utilizzato il valore di default
-      def self.define_cfgs(name, default_env:, configuration_name:,default_value:nil)
+      def self.define_cfgs(name, default_env:, configuration_name:, default_value: nil, from_proc: nil)
         configuration_name ||= name
 
         define_method(name) do
@@ -44,16 +45,24 @@ module SwarmClusterCliOpe
 
           #valore restituito direttamente dalla configurazione
           if @configs.key?(configuration_name)
-            value = @configs["#{configuration_name}".to_sym] || default_value
-          else
-            env_var = @configs["#{configuration_name}_env".to_sym] || default_env
-            value = find_env_file_variable(env_var) || default_value
+            value = @configs["#{configuration_name}".to_sym]
           end
+          # se non abbiamo nulla dalle configurazioni utilizziamo le variabili d'ambiente
+          if value.nil?
+            env_var = @configs["#{configuration_name}_env".to_sym] || default_env
+            value = find_env_file_variable(env_var)
+          end
+          # se non abbiamo ancora nulla e abbiamo una proc proseguiamo
+          if value.nil? and from_proc
+            value = from_proc.call(container)
+          end
+
+          value = value || default_value
+
           self.instance_variable_set("@#{name}", value)
         end
 
       end
-
 
       private
 

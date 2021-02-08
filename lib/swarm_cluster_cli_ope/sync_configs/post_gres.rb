@@ -54,7 +54,10 @@ module SwarmClusterCliOpe
         define_cfgs :username, default_env: "POSTGRES_USER", configuration_name: :pg_user, default_value: 'postgres'
         define_cfgs :password, default_env: "POSTGRES_PASSWORD", configuration_name: :pg_password
 
-        define_cfgs :database_version, default_env: "PG_MAJOR", configuration_name: :pg_version
+        define_cfgs :database_version, default_env: "PG_MAJOR", configuration_name: :pg_version,
+                    from_proc: ->(container) {
+                      container.exec("postgres -V").raw_result[:stdout].strip.match(/((\d+\.)?(\d+\.)?(\*|\d+))$/)[1] rescue nil
+                    }
 
       end
 
