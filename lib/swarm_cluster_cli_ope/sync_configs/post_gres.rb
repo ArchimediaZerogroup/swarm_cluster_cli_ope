@@ -50,9 +50,9 @@ module SwarmClusterCliOpe
       # Classe interna che rappresenta le configurazioni del DB
       class EnvConfigs < BaseDatabase::EnvConfigs
 
-        define_cfgs :database_name, default_env: "POSTGRES_DB", configuration_name: :database_name
-        define_cfgs :username, default_env: "POSTGRES_USER", configuration_name: :pg_user, default_value: 'postgres'
-        define_cfgs :password, default_env: "POSTGRES_PASSWORD", configuration_name: :pg_password
+        define_cfgs :database_name, default_env: ["POSTGRES_DB", "POSTGRESQL_DATABASE"], configuration_name: :database_name
+        define_cfgs :username, default_env: ["POSTGRES_USER", "POSTGRESQL_USERNAME"], configuration_name: :pg_user, default_value: 'postgres'
+        define_cfgs :password, default_env: ["POSTGRES_PASSWORD", "POSTGRESQL_PASSWORD"], configuration_name: :pg_password
 
         define_cfgs :database_version, default_env: "PG_MAJOR", configuration_name: :pg_version,
                     from_proc: ->(container) {
