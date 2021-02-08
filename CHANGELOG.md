@@ -1,5 +1,9 @@
 ## Changelog
 
+# 0.5.5
+- correzione utilizzo e configurazione variabili ambiente nelle configurazioni.
+- controllo di non installare rsync e killall nel caso siano già presenti.
+
 # 0.5.4
 - bug permessi sul file password dell'rsync
 
