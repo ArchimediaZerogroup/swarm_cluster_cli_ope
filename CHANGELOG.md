@@ -1,5 +1,8 @@
 ## Changelog
 
+# 0.5.6
+- correzione parsing variabili ambiente con '=='
+
 # 0.5.5
 - correzione utilizzo e configurazione variabili ambiente nelle configurazioni.
 - controllo di non installare rsync e killall nel caso siano già presenti.
