@@ -80,7 +80,7 @@ module SwarmClusterCliOpe
       ##
       # Estrae l'env dal container e ne tiene in memoria una copia, in modo da non fare multiple chiamate
       def env
-        @env ||= container.exec("env").raw_result[:stdout].split("\n").collect { |v| v.split('=') }.to_h
+        @env ||= Hash[ container.exec("env").raw_result[:stdout].scan(/-{0,2}([^=\s]+)(?:[=\s](\S+))?/) ]
       end
 
       def find_env_file_variable(env_var)
