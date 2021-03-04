@@ -33,6 +33,17 @@ services:
     volumes:
       - sqlite:/cartella_sqlite3
 
+  mongo:
+    image: mongo:4.2
+    volumes:
+      - "./mongo_db_init:/docker-entrypoint-initdb.d"
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+
 volumes:
   sqlite:
 
