@@ -112,10 +112,11 @@ ogni configurazione è composta da:
 
 - service è il nome del servizio (o nel caso  di k8s una stringa da utilizzare come selettore labels)
 - how è il come sincronizzare, definendo la tipologia:
-  - pg      -> DB TODO
+  - pg      -> DB: dump del DB con pgdump
   - mysql   -> DB: dump del db con mysqldump
   - sqlite3 -> DB: viene eseguita una copia del file
   - rsync   -> RSYNC
+  - mongodb -> mongodump e mongorestore
 - configs:  è un hash con le configurazioni per ogni tipo di sincronizzazione
 
 Possibili CFGS per tipologia:
@@ -159,8 +160,21 @@ Possibili CFGS per tipologia:
     - pg_user_env: "POSTGRES_USER"          -> variabile ambiente interna al servizio contenente USERNAME, DEFAULT: POSTGRES_USER 
     - pg_user: "postgres"                   -> valore in chiaro, in sostituzione della variabile ambiente, DEFAULT: postgres
     - database_name_env: "POSTGRES_DB"      -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: POSTGRES_DB         
-    - database_name: "nome_db"              -> valore in chiaro, in sostituzione della variabile ambiente     
-
+    - database_name: "nome_db"              -> valore in chiaro, in sostituzione della variabile ambiente
+- mongo:
+  - local:  -> hash di configurazioni per il DB locale
+    - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra
+    - password: ""                          -> password per DB
+    - username: ""                          -> username per DB
+    - database_name: "nome_db"              -> nome del DB
+    - exclude_from_sync: "coll1,coll2"      -> elenco di collections di cui non eseguire il dump quando facciamo PUSH, DEFAULT: ''
+  - remote: -> hash di configurazioni per il DB remoto
+    - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra
+    - password: ""                          -> password per DB
+    - username: ""                          -> username per DB
+    - database_name: "nome_db"              -> nome del DB
+    - exclude_from_sync: "coll1,coll2"      -> elenco di collections di cui non eseguire il dump quando facciamo PULL, DEFAULT: ''
+  
 #### EXAMPLE:
 Esempio di sincronizzazione di un file sqlite3 e una cartella
 

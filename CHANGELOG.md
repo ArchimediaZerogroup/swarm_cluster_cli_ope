@@ -1,5 +1,8 @@
 ## Changelog
 
+# 0.6
+- sync con MongoDB
+
 # 0.5.6
 - correzione parsing variabili ambiente con '=='
 
