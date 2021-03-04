@@ -37,7 +37,7 @@ module SwarmClusterCliOpe
       #                                           con _env o senza....precedenza SENZA
       # @param [Block] from_proc -> proc da utilizzare per ricavare il valore
       # @param [nil,String] default_value se non è estrapolato nessun valore, viene utilizzato il valore di default
-      def self.define_cfgs(name, default_env:, configuration_name:, default_value: nil, from_proc: nil)
+      def self.define_cfgs(name, default_env: nil, configuration_name:, default_value: nil, from_proc: nil)
         configuration_name ||= name
 
         define_method(name) do
@@ -48,7 +48,7 @@ module SwarmClusterCliOpe
             value = @configs["#{configuration_name}".to_sym]
           end
           # se non abbiamo nulla dalle configurazioni utilizziamo le variabili d'ambiente
-          if value.nil?
+          if value.nil? and default_env
 
             #cerchiamo nella lista delle variabili ambiente possibili, la prima che ha un valore la tengo per buona
             env_vars = []
