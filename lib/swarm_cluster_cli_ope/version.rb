@@ -1,3 +1,3 @@
 module SwarmClusterCliOpe
-  VERSION = "0.5.6"
+  VERSION = "0.6"
 end
