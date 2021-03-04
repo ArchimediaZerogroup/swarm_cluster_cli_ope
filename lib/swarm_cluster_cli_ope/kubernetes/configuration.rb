@@ -53,7 +53,7 @@ module SwarmClusterCliOpe
         when 'pg'
           SyncConfigs::PostGres
         else
-          logger.error { "CONFIGURAIONE NON PREVISTA: #{name}" }
+          logger.error { "CONFIGURAIONE NON PREVISTA in K8S: #{name}" }
           nil
         end
       end

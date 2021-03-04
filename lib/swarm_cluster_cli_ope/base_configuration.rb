@@ -102,6 +102,8 @@ module SwarmClusterCliOpe
         SyncConfigs::Mysql
       when 'pg'
         SyncConfigs::PostGres
+      when 'mongodb'
+        SyncConfigs::MongoDb
       else
         logger.error { "CONFIGURAIONE NON PREVISTA: #{name}" }
         nil
