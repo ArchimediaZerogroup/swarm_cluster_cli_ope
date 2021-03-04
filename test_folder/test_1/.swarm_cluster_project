@@ -6,6 +6,49 @@
   "log_level": "2",
   "sync_configs": [
     {
+      "service": "db",
+      "how": "mysql",
+      "configs": {
+        "local": {
+          "service": "db",
+          "mysql_password": "root",
+          "mysql_user": "root",
+          "database_name_env": "MYSQL_DATABASE"
+        },
+        "remote": {
+          "service": "db",
+          "mysql_password_env": "MYSQL_PASSWORD",
+          "mysql_user_env": "MYSQL_USER_FILE",
+          "database_name_env": "MYSQL_DATABASE"
+        }
+      }
+    },
+    {
+      "service": "db_pg",
+      "how": "pg",
+      "configs": {
+        "local": {
+          "service": "pg_locale"
+        }
+      }
+    },
+    {
+      "service": "second",
+      "how": "rsync",
+      "configs": {
+        "remote": "/test_bind",
+        "local": "./uploads"
+      }
+    },
+    {
+      "service": "test_sqlite3",
+      "how": "sqlite3",
+      "configs": {
+        "remote": "/cartella_sqlite3/esempio.sqlite3",
+        "local": "./development.sqlite3"
+      }
+    },
+    {
       "service": "mongo",
       "how": "mongodb",
       "configs": {
