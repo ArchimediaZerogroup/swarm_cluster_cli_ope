@@ -31,8 +31,9 @@ module SwarmClusterCliOpe
 
       # @param [String,Array<String>] cmd -> comando da passare a kubectl exec -- CMD
       # @return [SwarmClusterCliOpe::ShellCommandResponse]
-      def exec(cmd)
-        base_cmd(["exec", name, "--", cmd].flatten).execute
+      # @param [FalseClass] allow_failure -> parametro per lasciar fallire o meno il comando senza bloccarsi e poi gestirlo
+      def exec(cmd, allow_failure: false)
+        base_cmd(["exec", name, "--", cmd].flatten).execute(allow_failure: allow_failure)
       end
 
       ##
