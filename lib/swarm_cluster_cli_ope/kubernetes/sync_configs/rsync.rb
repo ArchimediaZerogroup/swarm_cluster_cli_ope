@@ -45,22 +45,24 @@ module SwarmClusterCliOpe
 
             # controllo presenza comandi necessari
             command_installed = false
-            cmd_ricerca = container.exec(['bash -c "command -v rsync && command -v killall"'])
-            unless cmd_ricerca.failed?
-              num_commands = cmd_ricerca.raw_result[:stdout].split("\n").count rescue 0
-              if num_commands == 2
-                command_installed = true
-              end
+            install_rsync = false
+            install_psmisc = false
+            if container.exec(['sh -c "command -v apt"'], allow_failure: true).success?
+              puts "Container Ubuntu"
+              install_rsync = container.exec(['sh -c "command -v rsync || apt update && apt install -yq rsync "'], allow_failure: true).success?
+              install_psmisc = container.exec(['sh -c "command -v killall || apt update && apt install -yq psmisc"'], allow_failure: true).success?
             end
 
-            unless command_installed
-              # tentiamo di installarlo
-              cmd = container.exec(['bash -c "apt update && apt install -yq rsync psmisc"'])
-              if cmd.failed?
-                puts "Problemi nell'installazione di rsync nel pod"
-              else
-                command_installed = true
-              end
+            if container.exec(['sh -c "command -v apk"'], allow_failure: true).success?
+              puts "Container Alpine"
+              install_rsync = container.exec(['sh -c "command -v rsync || apk add rsync"'], allow_failure: true).success?
+              install_psmisc = true
+            end
+
+            if install_rsync and install_psmisc
+              command_installed = true
+            else
+              puts "Problemi nell'installazione di rsync nel pod"
             end
 
             if command_installed
