@@ -51,6 +51,39 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: simple-container-alpine
+  namespace: test-rsync
+  labels:
+    app: ubuntu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alpine
+  template:
+    metadata:
+      labels:
+        app: alpine
+    spec:
+      containers:
+        - name: alpine
+          image: alpine
+          command:
+            - sh
+          args:
+            - -c
+            - touch /test_shared/pippo.txt && while sleep 3600; do :; done
+          volumeMounts:
+            - mountPath: /test_shared
+              name: shared
+      volumes:
+        - name: shared
+          persistentVolumeClaim:
+            claimName: test-pvc-request
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: simple-container-sqlite3
   namespace: test-rsync
   labels:

@@ -6,6 +6,14 @@
   "log_level": "3",
   "sync_configs": [
     {
+      "service": "app=alpine",
+      "how": "rsync",
+      "configs": {
+        "remote": "/test_shared",
+        "local": "./rsync_folder"
+      }
+    },
+    {
       "service": "app=postgresql13",
       "how": "pg",
       "configs": {

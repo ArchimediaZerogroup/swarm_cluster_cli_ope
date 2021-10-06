@@ -34,6 +34,12 @@ services:
     volumes:
       - ./cartella_bindata:/test_bind
 
+  alpine:
+    image: alpine
+    command: 'sleep infinity & wait'
+    volumes:
+      - ./cartella_bindata:/test_bind
+
   test_sqlite3:
     image: ubuntu
     command: '/bin/bash -c "touch /cartella_sqlite3/esempio.sqlite3 && trap : TERM INT; sleep infinity & wait"'
