@@ -1,5 +1,9 @@
 ## Changelog
 
+# 0.7
+- riconoscimento delle immagini durante rsync per installare correttamente pacchetto, 
+  viene riconosciuto ubuntu ed alpine
+
 # 0.6
 - sync con MongoDB
 
