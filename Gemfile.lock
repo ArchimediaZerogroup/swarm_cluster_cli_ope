@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     swarm_cluster_cli_ope (0.7)
-      activesupport
+      activesupport (< 7)
       open4
       thor (~> 1.0)
       zeitwerk (~> 2.3)
