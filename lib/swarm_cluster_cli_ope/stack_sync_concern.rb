@@ -49,6 +49,7 @@ module SwarmClusterCliOpe
         - mysql_user: "root"              -> valore in chiaro, in sostituzione della variabile ambiente, DEFAULT: root
         - database_name_env: "MYSQL_DATABASE"       -> variabile ambiente interna al servizio contenente NOME DB, DEFAULT: MYSQL_DATABASE         
         - database_name: "MYSQL_DATABASE"       -> valore in chiaro, in sostituzione della variabile ambiente     
+        - excluded_tables_data: []              -> elenco di tabelle di cui non scaricare i dati(solo lo schema), DEFAULT: []
       pg:
       --local:  -> hash di configurazioni per il DB locale
         - service: "db"                         -> nome del servizio nel compose locale, DEFAULT: quello definito sopra 
