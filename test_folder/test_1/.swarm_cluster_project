@@ -10,6 +10,25 @@
       "how": "mysql",
       "configs": {
         "local": {
+          "service": "second_no_data_for_table",
+          "mysql_password": "root",
+          "mysql_user": "root",
+          "database_name_env": "MYSQL_DATABASE"
+        },
+        "remote": {
+          "service": "db",
+          "mysql_password_env": "MYSQL_PASSWORD",
+          "mysql_user_env": "MYSQL_USER_FILE",
+          "database_name_env": "MYSQL_DATABASE",
+          "excluded_tables_data": ["city"]
+        }
+      }
+    },
+    {
+      "service": "db",
+      "how": "mysql",
+      "configs": {
+        "local": {
           "service": "db",
           "mysql_password": "root",
           "mysql_user": "root",

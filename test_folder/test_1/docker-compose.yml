@@ -5,14 +5,15 @@ services:
   db:
     image: mysql
     environment:
-      MYSQL_DATABASE: wordpress
+      MYSQL_DATABASE: world
       MYSQL_USER_FILE: '/esempio_file_mysql_username'
       MYSQL_PASSWORD: examplepass
       MYSQL_ROOT_PASSWORD: root
     configs:
       - source: mysql_username
         target: /esempio_file_mysql_username
-
+    volumes:
+      - ./world.sql.gz:/docker-entrypoint-initdb.d/world.sql.gz
 
   db_pg:
     image: postgres
