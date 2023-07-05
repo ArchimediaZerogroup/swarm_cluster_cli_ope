@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module SwarmClusterCliOpe
   module Kubernetes
     module SyncConfigs
@@ -88,19 +90,22 @@ module SwarmClusterCliOpe
                       pid = p.pid
                       say "PID in execuzione port forward:#{pid}"
 
+                      # directory temporanea dove salvare pa pwd
+                      pwd_dir = Dir.mktmpdir
                       begin
 
                         sleep 1
 
-                        # forzo i permessi sul file della password
-                        cmd = ShellCommandExecution.new(["chmod 600 #{ configs_path("password")}"])
-                        cmd.execute
+                        # creo il file password temporaneo
+                        tmp_file_path = File.join(pwd_dir,"password")
+                        FileUtils.copy(configs_path("password"),tmp_file_path)
+                        FileUtils.chmod(0600,tmp_file_path)
 
                         # lanciamo il comando quindi per far rsync
                         rsync_command = [
                           "rsync -az --no-o --no-g",
                           "--delete",
-                          "--password-file=#{ configs_path("password")}"
+                          "--password-file=#{tmp_file_path}"
                         ]
 
                         if direction == :up
@@ -119,6 +124,7 @@ module SwarmClusterCliOpe
                         sleep 1
                         say "Stoppo porta forwarded"
                         Process.kill("INT", pid)
+                        FileUtils.remove_entry pwd_dir
                       end
                     ensure
                       say "Tolgo il servizio di rsyn"
