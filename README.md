@@ -239,6 +239,16 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, 
 which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Usage inside docker
+E' stata creata un'immagine di docker che possiamo utilizzare per eseguire la gemma nel container senza dover
+installare ruby sulla macchina. Questo per ovviare a problemi di dipendenze con ruby e problemi di installazione
+riscontrati ultimamente con RVM. In un futuro questa gemma verrà abbandonata in favore di una cli riscritta completamente
+in Rust e compatibile con i file di configurazione, in modo da non essere dipendenti da ruby.
+
+Copiare in una cartella listata in $PATH lo script ./swarm_cli_ope e cambiargli i permessi in +x
+a questo punto potrete lanciare il comando swarm_cli_ope
+
+
 
 ## License
 

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+docker run -it --rm \
+       -v $PWD:/application \
+       -u $(id -u):$(id -g) \
+       -v $HOME:/home/dev_user
+       -v /var/run/docker.sock:/var/run/docker.sock
+
